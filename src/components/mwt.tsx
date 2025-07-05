@@ -101,7 +101,7 @@ export default function Mwt() {
   const midweekDay =
     typeof midweekDayNumber === 'number' ? days[midweekDayNumber] : null
   return (
-    <>
+    <div className='flex flex-col'>
       <div className='flex justify-end space-x-4'>
         <button
           type='button'
@@ -133,7 +133,7 @@ export default function Mwt() {
           </svg>
         </a>
       </div>
-      <div className='flex flex-grow flex-col items-center space-y-4'>
+      <div className='flex flex-col items-center space-y-4'>
         <p>{todayText}</p>
         <p>Midweek Day: {midweekDay ?? 'not set'}</p>
         <h2>{week}</h2>
@@ -156,6 +156,6 @@ export default function Mwt() {
           setMidweekDayNumber={setMidweekDayNumber}
         />
       </Modal>
-    </>
+    </div>
   )
 }

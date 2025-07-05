@@ -34,7 +34,7 @@ export default function Sword({
   const chapterLink = `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&bible=${bibleText}&pub=nwtsty`
   const bookWithChapter = `${bookName} ${bookChapter}`
   return (
-    <div className='flex flex-grow flex-col space-y-4'>
+    <div className='flex flex-col space-y-4'>
       <ul className='flex-grow space-y-4'>
         {[].map(({ chapterLink, bookChapter }) => (
           <li key={chapterLink}>

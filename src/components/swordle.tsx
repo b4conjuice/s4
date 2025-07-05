@@ -279,7 +279,7 @@ const Home = () => {
     ? (booksAndChaptersMap[sequenceBookName] ?? 1)
     : 1
   return (
-    <div className='flex flex-col p-4'>
+    <div className='flex flex-col'>
       <div className='flex justify-end space-x-4'>
         <button type='button' onClick={() => setIsExportDialogOpen(true)}>
           <ArrowUpTrayIcon className='h-6 w-6' />
