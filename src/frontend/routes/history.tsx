@@ -242,7 +242,7 @@ export default function History() {
                 bookChapter: bookWithChapter,
               },
             ])
-            window.open(chapterLink, '_blank')
+            window.open(chapterLink)
           },
         }
       })
