@@ -129,7 +129,7 @@ export default function BookSearch({
   searchRef: React.RefObject<HTMLInputElement | null>
 }) {
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
-    'sword-history',
+    's4-history',
     []
   )
 

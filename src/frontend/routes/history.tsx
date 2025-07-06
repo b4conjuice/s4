@@ -171,7 +171,7 @@ function CommandPalette({
 
 export default function History() {
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
-    'sword-history',
+    's4-history',
     []
   )
   const [selectedBook, setSelectedBook] = useState<string | null>(null)

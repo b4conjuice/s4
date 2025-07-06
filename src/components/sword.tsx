@@ -14,7 +14,7 @@ export default function Sword({
 }) {
   const [swordText, setSwordText] = useLocalStorage('sword-text', '1:1')
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
-    'sword-history',
+    's4-history',
     []
   )
 
