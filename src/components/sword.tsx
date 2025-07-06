@@ -3,11 +3,7 @@ import Button from '@/components/ui/button'
 import books, { booksAndChaptersMap } from '@/lib/books'
 import useLocalStorage from '@/lib/useLocalStorage'
 import copyToClipboard from '@/lib/copyToClipboard'
-
-type HistoryEntry = {
-  chapterLink: string
-  bookChapter: string
-}
+import type { HistoryEntry } from '@/lib/types'
 
 export default function Sword({
   excludeCommandPalette,
