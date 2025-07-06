@@ -13,6 +13,7 @@ export default function App() {
       </BrowserRouter>
       <ToastContainer
         autoClose={2000}
+        theme='dark'
         toastClassName='bg-cb-off-blue text-cb-white rounded-lg'
         pauseOnFocusLoss={false}
       />

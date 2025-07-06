@@ -22,3 +22,8 @@
 
   --animate-spin-slow: spin 2s linear infinite;
 }
+
+:root {
+  --toastify-color-dark: --color-cb-white;
+  --toastify-background-dark: --color-cb-off-blue;
+}
