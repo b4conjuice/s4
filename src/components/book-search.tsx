@@ -21,10 +21,12 @@ type Command = {
 
 function CommandPalette({
   commands,
+  recentCommands,
   placeholder = 'search commands',
   ref,
 }: {
   commands: Command[]
+  recentCommands: Command[]
   placeholder?: string
   ref: React.RefObject<HTMLInputElement | null>
 }) {
@@ -48,7 +50,7 @@ function CommandPalette({
   })
 
   const filteredCommands = !query
-    ? []
+    ? recentCommands
     : fuse.search(query.toLowerCase()).map(({ item }) => item)
   return (
     <>
@@ -122,6 +124,19 @@ function CommandPalette({
     </>
   )
 }
+function removeDuplicatesById(arr: any[], idField: string) {
+  const seenIds = new Set()
+  const uniqueArr = []
+
+  for (const obj of arr) {
+    const id = obj[idField]
+    if (!seenIds.has(id)) {
+      seenIds.add(id)
+      uniqueArr.push(obj)
+    }
+  }
+  return uniqueArr
+}
 
 export default function BookSearch({
   searchRef,
@@ -150,12 +165,13 @@ export default function BookSearch({
         const chapterLink = `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&bible=${bibleText}&pub=nwtsty`
         const bookWithChapter = `${bookName} ${bookChapter}`
         return {
-          id: `go-${bookName}-${bookChapter} - ${bibleText}`,
+          id: `go-${bibleText}`,
           title: `${bookName} ${bookChapter}`,
           action: () => {
             setHistory([
               ...history,
               {
+                bibleText,
                 chapterLink,
                 bookChapter: bookWithChapter,
               },
@@ -166,10 +182,40 @@ export default function BookSearch({
       })
     })
     .flat()
+
+  const recentCommands =
+    history?.slice(-3).map(({ bibleText, chapterLink, bookChapter }) => ({
+      id: `go-${bibleText}`,
+      title: `${bookChapter}`,
+      action: () => {
+        setHistory([
+          ...history,
+          {
+            bibleText,
+            chapterLink,
+            bookChapter,
+          },
+        ])
+        window.open(chapterLink)
+      },
+    })) ?? []
+
+  const seenIds = new Set()
+  const uniqueRecentCommands = []
+
+  for (const obj of recentCommands) {
+    const id = obj.id
+    if (!seenIds.has(id)) {
+      seenIds.add(id)
+      uniqueRecentCommands.push(obj)
+    }
+  }
+
   return (
     <>
       <CommandPalette
         commands={commands}
+        recentCommands={uniqueRecentCommands}
         placeholder='search books'
         ref={searchRef}
       />

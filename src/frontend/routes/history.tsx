@@ -206,6 +206,7 @@ export default function History() {
               setHistory([
                 ...history,
                 {
+                  bibleText,
                   chapterLink,
                   bookChapter: bookWithChapter,
                 },
@@ -238,6 +239,7 @@ export default function History() {
             setHistory([
               ...history,
               {
+                bibleText,
                 chapterLink,
                 bookChapter: bookWithChapter,
               },

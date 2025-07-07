@@ -56,6 +56,7 @@ export default function Sword({
           setHistory([
             ...history,
             {
+              bibleText,
               chapterLink,
               bookChapter: bookWithChapter,
             },
@@ -110,6 +111,7 @@ export default function Sword({
                 setHistory([
                   ...history,
                   {
+                    bibleText,
                     chapterLink,
                     bookChapter: bookWithChapter,
                   },
