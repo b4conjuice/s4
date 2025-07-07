@@ -124,19 +124,6 @@ function CommandPalette({
     </>
   )
 }
-function removeDuplicatesById(arr: any[], idField: string) {
-  const seenIds = new Set()
-  const uniqueArr = []
-
-  for (const obj of arr) {
-    const id = obj[idField]
-    if (!seenIds.has(id)) {
-      seenIds.add(id)
-      uniqueArr.push(obj)
-    }
-  }
-  return uniqueArr
-}
 
 export default function BookSearch({
   searchRef,
