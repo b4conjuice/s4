@@ -130,7 +130,7 @@ export default function BookSearch({
   showRecentCommands,
 }: {
   searchRef: React.RefObject<HTMLInputElement | null>
-  showRecentCommands: boolean
+  showRecentCommands?: boolean
 }) {
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
     's4-history',
