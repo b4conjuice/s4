@@ -127,8 +127,10 @@ function CommandPalette({
 
 export default function BookSearch({
   searchRef,
+  showRecentCommands,
 }: {
   searchRef: React.RefObject<HTMLInputElement | null>
+  showRecentCommands: boolean
 }) {
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
     's4-history',
@@ -202,7 +204,7 @@ export default function BookSearch({
     <>
       <CommandPalette
         commands={commands}
-        recentCommands={uniqueRecentCommands}
+        recentCommands={showRecentCommands ? uniqueRecentCommands : []}
         placeholder='search books'
         ref={searchRef}
       />
