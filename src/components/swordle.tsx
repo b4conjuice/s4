@@ -7,13 +7,13 @@ import {
 import { format } from 'date-fns/format'
 import { subDays } from 'date-fns/subDays'
 import { toast } from 'react-toastify'
+import { useCopyToClipboard } from '@uidotdev/usehooks'
 
 import Title from '@/components/ui/title'
 import Modal from '@/components/modal'
 import Button from '@/components/ui/button'
 import books, { bookIndex, booksAndChaptersMap } from '@/lib/books'
 import useLocalStorage from '@/lib/useLocalStorage'
-import copyToClipboard from '@/lib/copyToClipboard'
 import { api } from '@/trpc/react'
 
 type Statistics = {
@@ -235,6 +235,7 @@ const buttonTypes = [
 ]
 
 const Home = () => {
+  const [copiedText, copyToClipboard] = useCopyToClipboard()
   const now = new Date()
   const today = format(now, 'yyyy-MM-dd')
   const yesterday = format(subDays(now, 1), 'yyyy-MM-dd')
@@ -408,8 +409,8 @@ const Home = () => {
           title='import/export statistics'
         >
           <Button
-            onClick={() => {
-              copyToClipboard(
+            onClick={async () => {
+              await copyToClipboard(
                 btoa(
                   JSON.stringify({
                     streak,
