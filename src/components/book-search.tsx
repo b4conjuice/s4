@@ -21,12 +21,12 @@ type Command = {
 
 function CommandPalette({
   commands,
-  recentCommands,
+  defaultCommands,
   placeholder = 'search commands',
   ref,
 }: {
   commands: Command[]
-  recentCommands: Command[]
+  defaultCommands: Command[]
   placeholder?: string
   ref: React.RefObject<HTMLInputElement | null>
 }) {
@@ -50,7 +50,7 @@ function CommandPalette({
   })
 
   const filteredCommands = !query
-    ? recentCommands
+    ? defaultCommands
     : fuse.search(query.toLowerCase()).map(({ item }) => item)
   return (
     <>
@@ -61,10 +61,11 @@ function CommandPalette({
             void command.action()
           }
         }}
-        className='divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black/5'
+        className='bg-cb-white divide-y divide-gray-100 overflow-hidden rounded-xl shadow-2xl ring-1 ring-black/5'
         virtual={{
           options: filteredCommands,
         }}
+        immediate
       >
         <div className='flex items-center space-x-2 px-4'>
           <MagnifyingGlassIcon className='h-6 w-6 text-gray-500' />
@@ -78,45 +79,36 @@ function CommandPalette({
           />
         </div>
 
-        {filteredCommands.length > 0 && (
-          <ComboboxOptions
-            static
-            className='max-h-40 overflow-y-auto py-4 text-sm'
-          >
-            {({ option: command }: { option: Command }) => (
-              <ComboboxOption
-                key={command.id}
-                value={command}
-                className='w-full'
-              >
-                {({ active }) => (
-                  <div
-                    className={`space-x-1 px-4 py-2 ${
-                      active ? 'bg-indigo-600' : 'bg-white'
+        <ComboboxOptions className='max-h-40 overflow-y-auto py-4 text-sm empty:invisible'>
+          {({ option: command }: { option: Command }) => (
+            <ComboboxOption value={command} className='w-full'>
+              {({ active }) => (
+                <div
+                  className={`space-x-1 px-4 py-2 ${
+                    active ? 'bg-sword-purple' : 'bg-cb-white'
+                  }`}
+                >
+                  <span
+                    className={`font-medium ${
+                      active ? 'text-white' : 'text-gray-900'
                     }`}
                   >
+                    {command.title}
+                  </span>
+                  {command.subtitle && (
                     <span
-                      className={`font-medium ${
-                        active ? 'text-white' : 'text-gray-900'
+                      className={`${
+                        active ? 'text-indigo-200' : 'text-gray-400'
                       }`}
                     >
-                      {command.title}
+                      - {command.subtitle}
                     </span>
-                    {command.subtitle && (
-                      <span
-                        className={`${
-                          active ? 'text-indigo-200' : 'text-gray-400'
-                        }`}
-                      >
-                        - {command.subtitle}
-                      </span>
-                    )}
-                  </div>
-                )}
-              </ComboboxOption>
-            )}
-          </ComboboxOptions>
-        )}
+                  )}
+                </div>
+              )}
+            </ComboboxOption>
+          )}
+        </ComboboxOptions>
         {query && filteredCommands.length === 0 && (
           <p className='p-4 text-sm text-gray-500'>no results found</p>
         )}
@@ -128,9 +120,11 @@ function CommandPalette({
 export default function BookSearch({
   searchRef,
   showRecentCommands,
+  defaultCommands = [],
 }: {
   searchRef: React.RefObject<HTMLInputElement | null>
   showRecentCommands?: boolean
+  defaultCommands?: Command[]
 }) {
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
     's4-history',
@@ -204,7 +198,11 @@ export default function BookSearch({
     <>
       <CommandPalette
         commands={commands}
-        recentCommands={showRecentCommands ? uniqueRecentCommands : []}
+        defaultCommands={
+          showRecentCommands
+            ? [...defaultCommands, ...uniqueRecentCommands]
+            : [...defaultCommands]
+        }
         placeholder='search books'
         ref={searchRef}
       />
