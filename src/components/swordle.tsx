@@ -36,6 +36,9 @@ const DailyTextButton = ({
   setLastRead,
   bookAndChapter: savedBookAndChapter,
   readToday,
+  date,
+  dateString,
+  isLoading,
 }: {
   scripture: string
   today: string
@@ -50,6 +53,9 @@ const DailyTextButton = ({
   setLastRead: (lastRead: string) => void
   bookAndChapter: string | undefined
   readToday: boolean
+  date: string
+  dateString: string
+  isLoading: boolean
 }) => {
   const [bookAndChapter] = scripture
     ? scripture.split(':')
@@ -60,38 +66,80 @@ const DailyTextButton = ({
 
   const chapterLink = `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&bible=${bibleText}&pub=nwtsty`
   return (
-    <a
-      className='bg-cb-dark-blue group w-full cursor-pointer rounded-lg border-none text-center text-lg'
-      href={chapterLink}
-      target='_blank'
-      rel='noopener noreferrer'
-      onClick={() => {
-        if (!readToday) {
-          setTotal(total + 1)
-          const readYesterday = lastRead === yesterday
-          setLastRead(today)
+    <>
+      <a
+        className='bg-cb-dark-blue group w-full cursor-pointer rounded-lg border-none text-center text-lg'
+        href={`https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&alias=daily-text&date=${date}`}
+        target='_blank'
+        rel='noopener noreferrer'
+        onClick={() => {
+          if (!readToday) {
+            setTotal(total + 1)
+            const readYesterday = lastRead === yesterday
+            setLastRead(today)
 
-          if (readYesterday) {
-            const currentStreak = streak + 1
-            setStreak(currentStreak)
-            if (currentStreak > maxStreak) {
-              setMaxStreak(currentStreak)
+            if (readYesterday) {
+              const currentStreak = streak + 1
+              setStreak(currentStreak)
+              if (currentStreak > maxStreak) {
+                setMaxStreak(currentStreak)
+              }
+            } else {
+              setStreak(1)
             }
-          } else {
-            setStreak(1)
           }
-        }
-      }}
-    >
-      <span
-        className={`block translate-y-[-4px] transform rounded-lg bg-[#5a3e84] p-3 text-lg duration-[600ms] ease-[cubic-bezier(.3,.7,.4,1)] group-hover:translate-y-[-6px] group-hover:duration-[250ms] group-active:translate-y-[-2px] group-active:duration-[34ms] hover:ease-[cubic-bezier(.3,.7,.4,1.5)] ${
-          readToday ? 'text-cb-yellow' : 'text-gray-100'
-        }`}
+        }}
       >
-        read chapter: {bookAndChapter}
-        {readToday ? ' again' : ''}
-      </span>
-    </a>
+        <span
+          className={`block translate-y-[-4px] transform rounded-lg bg-[#5a3e84] p-3 text-lg duration-[600ms] ease-[cubic-bezier(.3,.7,.4,1)] group-hover:translate-y-[-6px] group-hover:duration-[250ms] group-active:translate-y-[-2px] group-active:duration-[34ms] hover:ease-[cubic-bezier(.3,.7,.4,1.5)] ${
+            readToday ? 'text-cb-yellow' : 'text-gray-100'
+          }`}
+        >
+          read daily text for {dateString}
+          {readToday ? ' again' : ''}
+        </span>
+      </a>
+      {isLoading ? (
+        <span className='bg-cb-dark-blue group w-full rounded-lg border-none text-center text-lg'>
+          <span className='block translate-y-[-4px] transform animate-pulse rounded-lg bg-[#5a3e84] p-3 text-lg text-gray-100 duration-[600ms] ease-[cubic-bezier(.3,.7,.4,1)]'>
+            <span className='invisible'>Hello</span>
+          </span>
+        </span>
+      ) : (
+        <a
+          className='bg-cb-dark-blue group w-full cursor-pointer rounded-lg border-none text-center text-lg'
+          href={chapterLink}
+          target='_blank'
+          rel='noopener noreferrer'
+          onClick={() => {
+            if (!readToday) {
+              setTotal(total + 1)
+              const readYesterday = lastRead === yesterday
+              setLastRead(today)
+
+              if (readYesterday) {
+                const currentStreak = streak + 1
+                setStreak(currentStreak)
+                if (currentStreak > maxStreak) {
+                  setMaxStreak(currentStreak)
+                }
+              } else {
+                setStreak(1)
+              }
+            }
+          }}
+        >
+          <span
+            className={`block translate-y-[-4px] transform rounded-lg bg-[#5a3e84] p-3 text-lg duration-[600ms] ease-[cubic-bezier(.3,.7,.4,1)] group-hover:translate-y-[-6px] group-hover:duration-[250ms] group-active:translate-y-[-2px] group-active:duration-[34ms] hover:ease-[cubic-bezier(.3,.7,.4,1.5)] ${
+              readToday ? 'text-cb-yellow' : 'text-gray-100'
+            }`}
+          >
+            read chapter: {bookAndChapter}
+            {readToday ? ' again' : ''}
+          </span>
+        </a>
+      )}
+    </>
   )
 }
 
@@ -238,8 +286,10 @@ const Home = () => {
   const [copiedText, copyToClipboard] = useCopyToClipboard()
   const now = new Date()
   const today = format(now, 'yyyy-MM-dd')
+  const date = format(now, 'yyyyMMdd')
+  const dateString = format(now, 'M.d.yy')
   const yesterday = format(subDays(now, 1), 'yyyy-MM-dd')
-  const { data } = api.sword.dt.useQuery({ date: today })
+  const { data, isLoading } = api.sword.dt.useQuery({ date: today })
   const [streak, setStreak] = useLocalStorage('swordle-streak', 0)
   const [maxStreak, setMaxStreak] = useLocalStorage('swordle-maxStreak', 0)
   const [total, setTotal] = useLocalStorage('swordle-total', 0)
@@ -310,6 +360,9 @@ const Home = () => {
               setLastRead={setLastRead}
               bookAndChapter={bookAndChapter}
               readToday={readToday}
+              date={date}
+              dateString={dateString}
+              isLoading={isLoading}
             />
           ) : (
             <SequentialButton
