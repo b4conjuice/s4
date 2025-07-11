@@ -45,7 +45,7 @@ export default function Home() {
           </div>
         </div>
       </Main>
-      <footer className='bg-cb-dusty-blue flex items-center justify-between px-2 pt-2 pb-4'>
+      <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-4'>
           <Link
             to='/history'
