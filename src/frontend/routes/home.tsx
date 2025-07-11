@@ -1,15 +1,34 @@
 import { useRef } from 'react'
 import { NavLink as Link } from 'react-router'
 import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { format } from 'date-fns'
 
 import Swordle from '@/components/swordle'
 import Mwt from '@/components/mwt'
 import Sword from '@/components/sword'
 import { Main, Title } from '@/components/ui'
 import BookSearch from '@/components/book-search'
+import { api } from '@/trpc/react'
+import { getBookLink, transformScripturetoText } from '@/lib/books'
 
 export default function Home() {
   const searchRef = useRef<HTMLInputElement | null>(null)
+  const now = new Date()
+  const today = format(now, 'yyyy-MM-dd')
+  const { data: dtData } = api.sword.dt.useQuery({ date: today })
+  const defaultCommands = []
+  if (dtData !== undefined) {
+    const scripture = dtData.scripture ?? 'dailyText'
+    const bibleText = transformScripturetoText(scripture)
+    defaultCommands.push({
+      id: 'dailyText',
+      title: `DT: ${scripture}`,
+      action: () => {
+        const bookLink = getBookLink(bibleText)
+        window.open(bookLink)
+      },
+    })
+  }
   return (
     <>
       <Main className='flex flex-col p-4'>
@@ -19,7 +38,10 @@ export default function Home() {
             <Swordle />
             <Mwt />
             {/* <Sword /> */}
-            <BookSearch searchRef={searchRef} />
+            <BookSearch
+              searchRef={searchRef}
+              defaultCommands={defaultCommands}
+            />
           </div>
         </div>
       </Main>

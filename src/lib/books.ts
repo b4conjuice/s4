@@ -72,5 +72,22 @@ const books = Object.keys(booksAndChaptersMap)
 const bookIndex = (bookName: string) =>
   books.findIndex(b => b === bookName.replace(' ', ' ')) + 1
 
+function getBookLink(bibleText: string) {
+  return `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&pub=nwtsty&bible=${bibleText}`
+}
+
+function transformScripturetoText(scripture: string) {
+  const [bookName, bookChapterVerse] = scripture.split(' ')
+  const [bookChapter, bookVerse] = bookChapterVerse?.split(':') ?? []
+
+  if (!bookName || !bookChapter) {
+    return ''
+  }
+  const bookNumber = books.indexOf(bookName) + 1
+  const verse = bookVerse ? String(bookVerse).padStart(3, '0') : '001'
+  const bibleText = `${String(bookNumber).padStart(2, '0')}${String(bookChapter).padStart(3, '0')}${verse}`
+  return bibleText
+}
+
 export default books
-export { bookIndex, booksAndChaptersMap }
+export { bookIndex, booksAndChaptersMap, getBookLink, transformScripturetoText }
