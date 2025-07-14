@@ -364,7 +364,7 @@ const Home = () => {
               dateString={dateString}
               isLoading={isLoading}
             />
-          ) : (
+          ) : sequence ? (
             <SequentialButton
               {...data}
               today={today}
@@ -381,7 +381,7 @@ const Home = () => {
               sequence={sequence}
               setSequence={setSequence}
             />
-          ))}
+          ) : null)}
         <Statistics
           statistics={{
             streak,
