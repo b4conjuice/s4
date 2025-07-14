@@ -76,25 +76,36 @@ function getBookLink(bibleText: string) {
   return `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&pub=nwtsty&bible=${bibleText}`
 }
 
-function transformScripturetoText(scripture: string) {
-  const [bookName, bookChapterVerse] = scripture.split(' ')
-  const [bookChapter, bookVerse] = bookChapterVerse?.split(':') ?? []
-
-  if (!bookName || !bookChapter) {
-    return ''
-  }
-  const bookNumber = books.indexOf(bookName) + 1
-  const verse = bookVerse ? String(bookVerse).padStart(3, '0') : '001'
-  const bibleText = `${String(bookNumber).padStart(2, '0')}${String(bookChapter).padStart(3, '0')}${verse}`
-  return bibleText
-}
-
 type Scripture = {
   text: string
-  bookName: string
+  bookName: string // TODO: rename to book for simplicity
   chapter: number
   verse: number
   asString: string
+}
+
+function transformScripturetoText(scripture: string | Partial<Scripture>) {
+  const defaultVerse = '001'
+  if (typeof scripture === 'string') {
+    const [bookName, bookChapterVerse] = scripture.split(' ')
+    const [bookChapter, bookVerse] = bookChapterVerse?.split(':') ?? []
+
+    if (!bookName || !bookChapter) {
+      return ''
+    }
+    const bookNumber = books.indexOf(bookName) + 1
+    const verse = bookVerse ? String(bookVerse).padStart(3, '0') : defaultVerse
+    const bibleText = `${String(bookNumber).padStart(2, '0')}${String(bookChapter).padStart(3, '0')}${verse}`
+    return bibleText
+  } else {
+    const { bookName, chapter, verse } = scripture
+    if (!bookName || !chapter) {
+      return ''
+    }
+    const bookNumber = books.indexOf(bookName) + 1
+    const bibleText = `${String(bookNumber).padStart(2, '0')}${String(chapter).padStart(3, '0')}${verse ?? defaultVerse}`
+    return bibleText
+  }
 }
 
 function transformTextToScripture(text: string) {

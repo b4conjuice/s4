@@ -7,6 +7,7 @@ import {
   ComboboxOptions,
 } from '@headlessui/react'
 import Fuse from 'fuse.js'
+import { useNavigate } from 'react-router'
 
 import useLocalStorage from '@/lib/useLocalStorage'
 import type { HistoryEntry } from '@/lib/types'
@@ -130,6 +131,7 @@ export default function BookSearch({
     's4-history',
     []
   )
+  const navigate = useNavigate()
 
   const commands = books
     .map((bookName, index) => {
@@ -150,7 +152,7 @@ export default function BookSearch({
         return {
           id: `go-${bibleText}`,
           title: `${bookName} ${bookChapter}`,
-          action: () => {
+          action: async () => {
             setHistory([
               ...history,
               {
@@ -160,6 +162,7 @@ export default function BookSearch({
               },
             ])
             window.open(chapterLink)
+            await navigate(`/books/${bookNumber}/${bookChapter}`)
           },
         }
       })
