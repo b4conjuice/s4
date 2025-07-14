@@ -89,5 +89,42 @@ function transformScripturetoText(scripture: string) {
   return bibleText
 }
 
+type Scripture = {
+  text: string
+  bookName: string
+  chapter: number
+  verse: number
+  asString: string
+}
+
+function transformTextToScripture(text: string) {
+  if (text.length !== 8) {
+    console.log('invalid text')
+    return ''
+  }
+  const bookNumber = Number(text.slice(0, 2))
+  const chapter = Number(text.slice(2, 5))
+  const verse = Number(text.slice(5, 8))
+  const bookName = books[bookNumber - 1]
+  if (!bookName) {
+    console.log('invalid bookName')
+    return ''
+  }
+  const scripture: Scripture = {
+    text,
+    bookName,
+    chapter,
+    verse,
+    asString: `${bookName} ${chapter}:${verse}`,
+  }
+  return scripture
+}
+
 export default books
-export { bookIndex, booksAndChaptersMap, getBookLink, transformScripturetoText }
+export {
+  bookIndex,
+  booksAndChaptersMap,
+  getBookLink,
+  transformScripturetoText,
+  transformTextToScripture,
+}
