@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio'
 
-const MEETING_LINKS_URL = 'https://wol.jw.org/en/wol/meetings/r1/lp-e/'
+import { MEETING_LINKS_URL } from '@/lib/common'
 
 export default async function requestMeetingLinks(date: string) {
   const url = `${MEETING_LINKS_URL}${date}`
@@ -20,7 +20,7 @@ export default async function requestMeetingLinks(date: string) {
     const meetingLinkElements = $(meetingLinkSelector)
     if (meetingLinkElements) {
       const weekElement = $(
-        '.todayItems > .todayItem:nth-child(1) > .itemData h1 strong'
+        '.todayItems > .todayItem:nth-child(1) > .itemData > header > h1'
       )
       const week = weekElement.text()
       const mwElement = $(

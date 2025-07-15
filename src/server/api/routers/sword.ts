@@ -32,8 +32,7 @@ export const swordRouter = createTRPCRouter({
   mwt: publicProcedure
     .input(z.object({ date: z.string() }))
     .query(async ({ input }) => {
-      const date = String(input.date).replace(/-/g, '/')
-      const data: MWTResponse = await requestMeetingLinks(date)
+      const data: MWTResponse = await requestMeetingLinks(input.date)
       return data
     }),
   dt: publicProcedure

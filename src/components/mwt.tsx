@@ -7,6 +7,7 @@ import Modal from '@/components/modal'
 import Button from '@/components/ui/button'
 import { api } from '@/trpc/react'
 import useLocalStorage from '@/lib/useLocalStorage'
+import { MEETING_LINKS_URL } from '@/lib/common'
 
 // day of week
 // 0 = sunday
@@ -80,12 +81,12 @@ export default function Mwt() {
   >('midweekday', undefined)
   const [showModal, setShowModal] = useState(false)
   const now = new Date()
-  const todayDate = format(now, 'yyyy-w')
-  const nextWeekDate = format(add(now, { weeks: 1 }), 'yyyy-w')
+  const thisWeekDate = format(now, 'yyyy/w')
+  const nextWeekDate = format(add(now, { weeks: 1 }), 'yyyy/w')
   const todayText = format(now, 'MMM dd, yyyy')
   const todaysDayOfWeek = getDay(now)
 
-  const { data: thisWeekData } = api.sword.mwt.useQuery({ date: todayDate })
+  const { data: thisWeekData } = api.sword.mwt.useQuery({ date: thisWeekDate })
   const { data: nextWeekData } = api.sword.mwt.useQuery({ date: nextWeekDate })
 
   const finishedMidweek = todaysDayOfWeek > Number(midweekDayNumber)
@@ -136,14 +137,22 @@ export default function Mwt() {
       <div className='flex flex-col items-center space-y-4'>
         <p>{todayText}</p>
         <p>Midweek Day: {midweekDay ?? 'not set'}</p>
+        <ExternalLink href={`${MEETING_LINKS_URL}${thisWeekDate}`}>
+          {!finishedMidweek && 'mw/'}wt
+        </ExternalLink>
         <h2>{week}</h2>
         {!finishedMidweek && (
           <ExternalLink href={mwUrl ?? ''}>{mwTitle}</ExternalLink>
         )}
         {wtTitle && <ExternalLink href={wtUrl ?? ''}>{wtTitle}</ExternalLink>}
+
         {finishedMidweek && (
           <>
+            <ExternalLink href={`${MEETING_LINKS_URL}${nextWeekDate}`}>
+              mw
+            </ExternalLink>
             <h2>{nextWeek}</h2>
+
             <ExternalLink href={mwUrlNextWeek ?? ''}>
               {mwTitleNextWeek}
             </ExternalLink>
