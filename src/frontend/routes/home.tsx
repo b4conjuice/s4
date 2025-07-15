@@ -43,6 +43,11 @@ export default function Home() {
             <BookSearch
               searchRef={searchRef}
               defaultCommands={defaultCommands}
+              onSelectBook={scripture => {
+                const text = transformScripturetoText(scripture)
+                const chapterLink = getBookLink(text)
+                window.open(chapterLink)
+              }}
             />
           </div>
         </div>
