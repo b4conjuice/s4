@@ -7,11 +7,14 @@ import {
   ComboboxOptions,
 } from '@headlessui/react'
 import Fuse from 'fuse.js'
-import { useNavigate } from 'react-router'
 
 import useLocalStorage from '@/lib/useLocalStorage'
-import type { HistoryEntry } from '@/lib/types'
-import books, { booksAndChaptersMap } from '@/lib/books'
+import type { HistoryEntry, Scripture } from '@/lib/types'
+import books, {
+  booksAndChaptersMap,
+  getBookLink,
+  transformScripturetoText,
+} from '@/lib/books'
 
 type Command = {
   id: string
@@ -122,16 +125,17 @@ export default function BookSearch({
   searchRef,
   showRecentCommands,
   defaultCommands = [],
+  onSelectBook,
 }: {
   searchRef: React.RefObject<HTMLInputElement | null>
   showRecentCommands?: boolean
   defaultCommands?: Command[]
+  onSelectBook: (scripture: Scripture) => void
 }) {
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
     's4-history',
     []
   )
-  const navigate = useNavigate()
 
   const commands = books
     .map((bookName, index) => {
@@ -144,25 +148,29 @@ export default function BookSearch({
         },
         (_, i) => i + 1
       ).map(bookChapter => {
-        const verse = '001'
-        const bibleText = `${bookNumber}${String(bookChapter).padStart(3, '0')}${verse}`
-
-        const chapterLink = `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&bible=${bibleText}&pub=nwtsty`
+        const scripture: Scripture = {
+          bookName: bookName,
+          bookNumber: bookNumber,
+          chapter: bookChapter,
+        }
+        const text = transformScripturetoText(scripture)
+        const chapterLink = getBookLink(text)
         const bookWithChapter = `${bookName} ${bookChapter}`
         return {
-          id: `go-${bibleText}`,
+          id: `go-${text}`,
           title: `${bookName} ${bookChapter}`,
           action: async () => {
             setHistory([
               ...history,
               {
-                bibleText,
+                bibleText: text,
                 chapterLink,
                 bookChapter: bookWithChapter,
               },
             ])
-            window.open(chapterLink)
-            await navigate(`/books/${bookNumber}/${bookChapter}`)
+            if (onSelectBook) {
+              onSelectBook(scripture)
+            }
           },
         }
       })
