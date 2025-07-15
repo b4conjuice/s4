@@ -1,3 +1,5 @@
+import type { Scripture } from '@/lib/types'
+
 const booksAndChaptersMap: Record<string, number> = {
   'Gen.': 50,
   'Ex.': 40,
@@ -73,15 +75,8 @@ const bookIndex = (bookName: string) =>
   books.findIndex(b => b === bookName.replace(' ', ' ')) + 1
 
 function getBookLink(bibleText: string) {
+  // TODO: rename to getTextUrl
   return `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&pub=nwtsty&bible=${bibleText}`
-}
-
-type Scripture = {
-  text: string
-  bookName: string // TODO: rename to book for simplicity
-  chapter: number
-  verse: number
-  asString: string
 }
 
 function transformScripturetoText(scripture: string | Partial<Scripture>) {
@@ -102,7 +97,7 @@ function transformScripturetoText(scripture: string | Partial<Scripture>) {
     if (!bookName || !chapter) {
       return ''
     }
-    const bookNumber = books.indexOf(bookName) + 1
+    const bookNumber = books.indexOf(bookName) + 1 // TODO: check if bookNumber is on `scripture`
     const bibleText = `${String(bookNumber).padStart(2, '0')}${String(chapter).padStart(3, '0')}${verse ?? defaultVerse}`
     return bibleText
   }
@@ -124,6 +119,7 @@ function transformTextToScripture(text: string) {
   const scripture: Scripture = {
     text,
     bookName,
+    bookNumber,
     chapter,
     verse,
     asString: `${bookName} ${chapter}:${verse}`,
