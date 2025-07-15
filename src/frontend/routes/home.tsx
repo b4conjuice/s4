@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { NavLink as Link } from 'react-router'
-import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { Bars2Icon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { format } from 'date-fns'
 
 import Swordle from '@/components/swordle'
@@ -56,7 +56,7 @@ export default function Home() {
               setIsMenuOpen(true)
             }}
           >
-            <ChevronLeftIcon className='h-6 w-6' />
+            <Bars2Icon className='h-6 w-6' />
           </button>
         </div>
         <div className='flex space-x-4'>
