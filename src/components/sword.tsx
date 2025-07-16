@@ -3,7 +3,7 @@ import Button from '@/components/ui/button'
 import books, { booksAndChaptersMap } from '@/lib/books'
 import useLocalStorage from '@/lib/useLocalStorage'
 import copyToClipboard from '@/lib/copyToClipboard'
-import type { HistoryEntry } from '@/lib/types'
+import useHistory from '@/lib/useHistory'
 
 export default function Sword({
   excludeCommandPalette,
@@ -13,10 +13,7 @@ export default function Sword({
   onClick?: (args?: unknown) => void
 }) {
   const [swordText, setSwordText] = useLocalStorage('sword-text', '1:1')
-  const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
-    's4-history',
-    []
-  )
+  const { addHistory } = useHistory()
 
   const bookNumber = swordText?.split(':')[0]
   const bookChapter = swordText?.split(':')[1]
@@ -29,6 +26,11 @@ export default function Sword({
 
   const chapterLink = `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&bible=${bibleText}&pub=nwtsty`
   const bookWithChapter = `${bookName} ${bookChapter}`
+  const scripture = {
+    bookName: bookName ?? '',
+    bookNumber: Number(bookNumber),
+    chapter: Number(bookChapter),
+  }
   return (
     <div className='flex flex-col space-y-4'>
       <ul className='flex-grow space-y-4'>
@@ -53,14 +55,7 @@ export default function Sword({
           if (onClick) {
             onClick(bookWithChapter)
           }
-          setHistory([
-            ...history,
-            {
-              bibleText,
-              chapterLink,
-              bookChapter: bookWithChapter,
-            },
-          ])
+          addHistory(scripture)
         }}
       >
         {bookWithChapter}
@@ -108,14 +103,7 @@ export default function Sword({
               id: `go-text`,
               title: `go text`,
               action: () => {
-                setHistory([
-                  ...history,
-                  {
-                    bibleText,
-                    chapterLink,
-                    bookChapter: bookWithChapter,
-                  },
-                ])
+                addHistory(scripture)
                 window.open(chapterLink, '_blank')
               },
             },
