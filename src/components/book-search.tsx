@@ -15,6 +15,7 @@ import books, {
   getBookLink,
   transformScripturetoText,
 } from '@/lib/books'
+import classNames from 'classnames'
 
 type Command = {
   id: string
@@ -65,20 +66,20 @@ function CommandPalette({
             void command.action()
           }
         }}
-        className='bg-cb-white divide-y divide-gray-100 overflow-hidden rounded-xl shadow-2xl ring-1 ring-black/5'
+        className='bg-cb-blue divide-cb-dusty-blue ring-cb-mint divide-y overflow-hidden rounded-xl shadow-2xl ring-1'
         virtual={{
           options: filteredCommands,
         }}
         immediate
       >
         <div className='flex items-center space-x-2 px-4'>
-          <MagnifyingGlassIcon className='h-6 w-6 text-gray-500' />
+          <MagnifyingGlassIcon className='text-cb-yellow h-6 w-6' />
           <ComboboxInput
             ref={ref}
             onChange={e => {
               setQuery(e.target.value)
             }}
-            className='placholder-gray-400 h-12 w-full border-0 bg-transparent text-gray-800 focus:ring-0 focus:outline-0'
+            className='placeholder-cb-yellow/75 h-12 w-full border-0 bg-transparent focus:ring-0 focus:outline-0'
             placeholder={placeholder}
           />
         </div>
@@ -88,14 +89,16 @@ function CommandPalette({
             <ComboboxOption value={command} className='w-full'>
               {({ active }) => (
                 <div
-                  className={`space-x-1 px-4 py-2 ${
-                    active ? 'bg-sword-purple' : 'bg-cb-white'
-                  }`}
+                  className={classNames(
+                    'space-x-1 px-4 py-2',
+                    active ? 'bg-sword-purple' : ''
+                  )}
                 >
                   <span
-                    className={`font-medium ${
-                      active ? 'text-white' : 'text-gray-900'
-                    }`}
+                    className={classNames(
+                      'font-medium',
+                      active ? 'text-cb-yellow' : ''
+                    )}
                   >
                     {command.title}
                   </span>
