@@ -1,13 +1,20 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { NavLink as Link } from 'react-router'
-import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import {
+  ChevronLeftIcon,
+  MagnifyingGlassIcon,
+  TrashIcon,
+} from '@heroicons/react/20/solid'
 
 import { Main, Title } from '@/components/ui'
 import BookSearch from '@/components/book-search'
+import Modal from '@/components/modal'
+import Button from '@/components/ui/button'
 import { openBookLink } from '@/lib/books'
 import useHistory from '@/lib/useHistory'
 
 export default function History() {
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
   const { history, clear } = useHistory()
   const searchRef = useRef<HTMLInputElement | null>(null)
 
@@ -43,6 +50,15 @@ export default function History() {
         </div>
         <div className='flex space-x-4'>
           <button
+            className='text-red-700 hover:text-red-700/75'
+            type='button'
+            onClick={() => {
+              setIsConfirmModalOpen(true)
+            }}
+          >
+            <TrashIcon className='h-6 w-6' />
+          </button>
+          <button
             className='text-cb-yellow hover:text-cb-yellow/75'
             type='button'
             onClick={() => {
@@ -53,6 +69,29 @@ export default function History() {
           </button>
         </div>
       </footer>
+      <Modal
+        isOpen={isConfirmModalOpen}
+        setIsOpen={setIsConfirmModalOpen}
+        title='are you sure you want to clear history?'
+      >
+        <div className='flex space-x-4'>
+          <Button
+            onClick={() => {
+              clear()
+              setIsConfirmModalOpen(false)
+            }}
+          >
+            yes
+          </Button>
+          <Button
+            onClick={() => {
+              setIsConfirmModalOpen(false)
+            }}
+          >
+            no
+          </Button>
+        </div>
+      </Modal>
     </>
   )
 }
