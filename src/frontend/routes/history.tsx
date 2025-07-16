@@ -26,12 +26,12 @@ export default function History() {
           <div className='flex flex-grow flex-col justify-between space-y-4'>
             <ul className='divide-cb-dusty-blue divide-y overflow-y-auto'>
               {history?.map(({ scripture, url }, index) => (
-                <li key={index} className='py-4'>
+                <li key={index} className='group'>
                   <Link
                     to={url}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-cb-pink hover:text-cb-pink/75 truncate'
+                    className='text-cb-pink hover:text-cb-pink/75 block truncate py-4 group-first:pt-0'
                   >
                     {scripture.asString}
                   </Link>
