@@ -12,7 +12,6 @@ import Fuse from 'fuse.js'
 import type { Scripture } from '@/lib/types'
 import books, {
   booksAndChaptersMap,
-  getBookLink,
   transformScripturetoText,
 } from '@/lib/books'
 import useHistory from '@/lib/useHistory'
@@ -154,17 +153,11 @@ export default function BookSearch({
           chapter: bookChapter,
         }
         const text = transformScripturetoText(scripture)
-        const chapterLink = getBookLink(text)
-        const bookWithChapter = `${bookName} ${bookChapter}`
         return {
           id: `go-${text}`,
           title: `${bookName} ${bookChapter}`,
           action: async () => {
-            addHistory({
-              bibleText: text,
-              chapterLink,
-              bookChapter: bookWithChapter,
-            })
+            addHistory(scripture)
             if (onSelectBook) {
               onSelectBook(scripture)
             }
@@ -175,16 +168,12 @@ export default function BookSearch({
     .flat()
 
   const recentCommands =
-    history?.slice(-3).map(({ bibleText, chapterLink, bookChapter }) => ({
-      id: `go-${bibleText}`,
-      title: `${bookChapter}`,
+    history?.slice(-3).map(({ scripture, url }) => ({
+      id: `go-${scripture.text}`,
+      title: `${scripture.asString}`,
       action: () => {
-        addHistory({
-          bibleText,
-          chapterLink,
-          bookChapter,
-        })
-        window.open(chapterLink)
+        addHistory(scripture)
+        window.open(url)
       },
     })) ?? []
 

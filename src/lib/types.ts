@@ -1,7 +1,7 @@
 export type HistoryEntry = {
-  bibleText: string
-  chapterLink: string
-  bookChapter: string
+  scripture: Scripture
+  date: Date
+  url: string
 }
 
 export type Scripture = {

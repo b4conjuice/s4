@@ -25,15 +25,15 @@ export default function History() {
           <Title>history ⚔️</Title>
           <div className='flex flex-grow flex-col justify-between space-y-4'>
             <ul className='divide-cb-dusty-blue divide-y overflow-y-auto'>
-              {history?.map(({ chapterLink, bookChapter }, index) => (
+              {history?.map(({ scripture, url }, index) => (
                 <li key={index} className='py-4'>
                   <Link
-                    to={chapterLink}
+                    to={url}
                     target='_blank'
                     rel='noopener noreferrer'
                     className='text-cb-pink hover:text-cb-pink/75 truncate'
                   >
-                    {bookChapter}
+                    {scripture.asString}
                   </Link>
                 </li>
               ))}

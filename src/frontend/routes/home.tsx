@@ -9,7 +9,11 @@ import Sword from '@/components/sword'
 import { Main, Title } from '@/components/ui'
 import BookSearch from '@/components/book-search'
 import { api } from '@/trpc/react'
-import { getBookLink, transformScripturetoText } from '@/lib/books'
+import {
+  getBookLink,
+  transformScripturetoText,
+  transformTextToScripture,
+} from '@/lib/books'
 import Modal from '@/components/modal'
 import useHistory from '@/lib/useHistory'
 
@@ -22,21 +26,20 @@ export default function Home() {
   const { data: dtData } = api.sword.dt.useQuery({ date: today })
   const defaultCommands = []
   if (dtData !== undefined) {
-    const scripture = dtData.scripture ?? 'dailyText'
-    const bibleText = transformScripturetoText(scripture)
-    defaultCommands.push({
-      id: 'dailyText',
-      title: `DT: ${scripture}`,
-      action: () => {
-        const bookLink = getBookLink(bibleText)
-        addHistory({
-          bibleText,
-          chapterLink: bookLink,
-          bookChapter: scripture,
-        })
-        window.open(bookLink)
-      },
-    })
+    const dailyText = dtData.scripture ?? 'dailyText'
+    const bibleText = transformScripturetoText(dailyText)
+    const scripture = transformTextToScripture(bibleText)
+    if (scripture !== '') {
+      defaultCommands.push({
+        id: 'dailyText',
+        title: `DT: ${dailyText}`,
+        action: () => {
+          const bookLink = getBookLink(bibleText)
+          addHistory(scripture)
+          window.open(bookLink)
+        },
+      })
+    }
   }
   return (
     <>
