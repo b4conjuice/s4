@@ -9,13 +9,13 @@ import {
 } from '@headlessui/react'
 import Fuse from 'fuse.js'
 
-import useLocalStorage from '@/lib/useLocalStorage'
-import type { HistoryEntry, Scripture } from '@/lib/types'
+import type { Scripture } from '@/lib/types'
 import books, {
   booksAndChaptersMap,
   getBookLink,
   transformScripturetoText,
 } from '@/lib/books'
+import useHistory from '@/lib/useHistory'
 
 type Command = {
   id: string
@@ -135,10 +135,7 @@ export default function BookSearch({
   defaultCommands?: Command[]
   onSelectBook: (scripture: Scripture) => void
 }) {
-  const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
-    's4-history',
-    []
-  )
+  const { history, add } = useHistory()
 
   const commands = books
     .map((bookName, index) => {
@@ -163,14 +160,11 @@ export default function BookSearch({
           id: `go-${text}`,
           title: `${bookName} ${bookChapter}`,
           action: async () => {
-            setHistory([
-              ...history,
-              {
-                bibleText: text,
-                chapterLink,
-                bookChapter: bookWithChapter,
-              },
-            ])
+            add({
+              bibleText: text,
+              chapterLink,
+              bookChapter: bookWithChapter,
+            })
             if (onSelectBook) {
               onSelectBook(scripture)
             }
@@ -185,14 +179,11 @@ export default function BookSearch({
       id: `go-${bibleText}`,
       title: `${bookChapter}`,
       action: () => {
-        setHistory([
-          ...history,
-          {
-            bibleText,
-            chapterLink,
-            bookChapter,
-          },
-        ])
+        add({
+          bibleText,
+          chapterLink,
+          bookChapter,
+        })
         window.open(chapterLink)
       },
     })) ?? []
