@@ -15,7 +15,7 @@ import useHistory from '@/lib/useHistory'
 
 export default function History() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
-  const { history, clear } = useHistory()
+  const { history, clearHistory } = useHistory()
   const searchRef = useRef<HTMLInputElement | null>(null)
 
   return (
@@ -77,7 +77,7 @@ export default function History() {
         <div className='flex space-x-4'>
           <Button
             onClick={() => {
-              clear()
+              clearHistory()
               setIsConfirmModalOpen(false)
             }}
           >

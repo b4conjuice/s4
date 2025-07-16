@@ -135,7 +135,7 @@ export default function BookSearch({
   defaultCommands?: Command[]
   onSelectBook: (scripture: Scripture) => void
 }) {
-  const { history, add } = useHistory()
+  const { history, addHistory } = useHistory()
 
   const commands = books
     .map((bookName, index) => {
@@ -160,7 +160,7 @@ export default function BookSearch({
           id: `go-${text}`,
           title: `${bookName} ${bookChapter}`,
           action: async () => {
-            add({
+            addHistory({
               bibleText: text,
               chapterLink,
               bookChapter: bookWithChapter,
@@ -179,7 +179,7 @@ export default function BookSearch({
       id: `go-${bibleText}`,
       title: `${bookChapter}`,
       action: () => {
-        add({
+        addHistory({
           bibleText,
           chapterLink,
           bookChapter,

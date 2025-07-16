@@ -6,11 +6,11 @@ export default function useHistory() {
     's4-history',
     []
   )
-  function add(entry: HistoryEntry) {
+  function addHistory(entry: HistoryEntry) {
     setHistory([entry, ...history])
   }
-  function clear() {
+  function clearHistory() {
     setHistory([])
   }
-  return { history, clear, add }
+  return { history, clearHistory, addHistory }
 }

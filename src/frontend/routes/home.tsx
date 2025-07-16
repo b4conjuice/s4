@@ -14,7 +14,7 @@ import Modal from '@/components/modal'
 import useHistory from '@/lib/useHistory'
 
 export default function Home() {
-  const { add } = useHistory()
+  const { addHistory } = useHistory()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const searchRef = useRef<HTMLInputElement | null>(null)
   const now = new Date()
@@ -29,7 +29,7 @@ export default function Home() {
       title: `DT: ${scripture}`,
       action: () => {
         const bookLink = getBookLink(bibleText)
-        add({
+        addHistory({
           bibleText,
           chapterLink: bookLink,
           bookChapter: scripture,
