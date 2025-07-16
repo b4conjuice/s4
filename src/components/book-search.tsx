@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import classNames from 'classnames'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import {
   Combobox,
@@ -15,7 +16,6 @@ import books, {
   getBookLink,
   transformScripturetoText,
 } from '@/lib/books'
-import classNames from 'classnames'
 
 type Command = {
   id: string
