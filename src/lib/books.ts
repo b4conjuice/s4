@@ -79,6 +79,12 @@ function getBookLink(bibleText: string) {
   return `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&pub=nwtsty&bible=${bibleText}`
 }
 
+function openBookLink(scripture: Scripture) {
+  const text = transformScripturetoText(scripture)
+  const chapterLink = getBookLink(text)
+  window.open(chapterLink)
+}
+
 function transformScripturetoText(scripture: string | Partial<Scripture>) {
   const defaultVerse = '001'
   if (typeof scripture === 'string') {
@@ -132,6 +138,7 @@ export {
   bookIndex,
   booksAndChaptersMap,
   getBookLink,
+  openBookLink,
   transformScripturetoText,
   transformTextToScripture,
 }
