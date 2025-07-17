@@ -13,6 +13,7 @@ import type { Scripture } from '@/lib/types'
 import books, {
   booksAndChaptersMap,
   transformScripturetoText,
+  transformTextToScripture,
 } from '@/lib/books'
 import useHistory from '@/lib/useHistory'
 
@@ -28,11 +29,13 @@ function CommandPalette({
   defaultCommands,
   placeholder = 'search commands',
   ref,
+  createCustomCommand,
 }: {
   commands: Command[]
   defaultCommands: Command[]
   placeholder?: string
   ref: React.RefObject<HTMLInputElement | null>
+  createCustomCommand?: (query: string) => Command | null
 }) {
   const [query, setQuery] = useState('')
 
@@ -53,9 +56,13 @@ function CommandPalette({
     keys: ['id', 'title', { name: 'name', weight: 2 }],
   })
 
-  const filteredCommands = !query
-    ? defaultCommands
-    : fuse.search(query.toLowerCase()).map(({ item }) => item)
+  const customCommand = createCustomCommand ? createCustomCommand(query) : null
+  const filteredCommands = [
+    ...(query.length > 0 && customCommand ? [customCommand] : []),
+    ...(!query
+      ? defaultCommands
+      : fuse.search(query.toLowerCase()).map(({ item }) => item)),
+  ]
   return (
     <>
       <Combobox
@@ -65,58 +72,87 @@ function CommandPalette({
             void command.action()
           }
         }}
+        onClose={() => {
+          setQuery('')
+        }}
         className='bg-cb-blue divide-cb-dusty-blue ring-cb-mint divide-y overflow-hidden rounded-xl shadow-2xl ring-1'
         virtual={{
           options: filteredCommands,
         }}
         immediate
       >
-        <div className='flex items-center space-x-2 px-4'>
-          <MagnifyingGlassIcon className='text-cb-yellow h-6 w-6' />
-          <ComboboxInput
-            ref={ref}
-            onChange={e => {
-              setQuery(e.target.value)
-            }}
-            className='placeholder-cb-yellow/75 h-12 w-full border-0 bg-transparent focus:ring-0 focus:outline-0'
-            placeholder={placeholder}
-          />
-        </div>
+        {({ activeOption }) => (
+          <>
+            <div className='flex items-center space-x-2 px-4'>
+              <MagnifyingGlassIcon className='text-cb-yellow h-6 w-6' />
+              <ComboboxInput
+                ref={ref}
+                value={query}
+                onChange={e => {
+                  setQuery(e.target.value)
+                }}
+                className='placeholder-cb-yellow/75 h-12 w-full border-0 bg-transparent focus:ring-0 focus:outline-0'
+                placeholder={placeholder}
+                onKeyDown={e => {
+                  if (e.key === 'Tab' && query.length > 0) {
+                    e.preventDefault()
+                    if (activeOption) {
+                      const title = (activeOption as Command).title
+                      setQuery(title)
+                    }
+                  }
+                }}
+              />
+            </div>
 
-        <ComboboxOptions className='max-h-40 overflow-y-auto py-4 text-sm empty:invisible'>
-          {({ option: command }: { option: Command }) => (
-            <ComboboxOption value={command} className='w-full'>
-              {({ active }) => (
-                <div
-                  className={classNames(
-                    'space-x-1 px-4 py-2',
-                    active ? 'bg-sword-purple' : ''
-                  )}
-                >
-                  <span
-                    className={classNames(
-                      'font-medium',
-                      active ? 'text-cb-yellow' : ''
-                    )}
-                  >
-                    {command.title}
-                  </span>
-                  {command.subtitle && (
-                    <span
-                      className={`${
-                        active ? 'text-indigo-200' : 'text-gray-400'
-                      }`}
+            <ComboboxOptions className='max-h-40 overflow-y-auto py-4 text-sm empty:invisible'>
+              {({ option: command }: { option: Command }) => (
+                <ComboboxOption value={command} className='w-full'>
+                  {({ active }) => (
+                    <div
+                      className={classNames(
+                        'flex items-center space-x-1 px-4 py-2',
+                        active ? 'bg-sword-purple' : ''
+                      )}
                     >
-                      - {command.subtitle}
-                    </span>
+                      <div className='flex-grow'>
+                        <span
+                          className={classNames(
+                            'font-medium',
+                            active ? 'text-cb-yellow' : ''
+                          )}
+                        >
+                          {command.title}
+                        </span>
+                        {command.subtitle && (
+                          <span
+                            className={`${
+                              active ? 'text-indigo-200' : 'text-gray-400'
+                            }`}
+                          >
+                            - {command.subtitle}
+                          </span>
+                        )}
+                      </div>
+                      {/* <button
+                        type='button'
+                        className='text-cb-yellow hover:text-cb-yellow/75 hover:cursor-pointer'
+                        onClick={e => {
+                          e.preventDefault()
+                          setQuery(command.title)
+                        }}
+                      >
+                        <ArrowUpLeftIcon className='h-6 w-6' />
+                      </button> */}
+                    </div>
                   )}
-                </div>
+                </ComboboxOption>
               )}
-            </ComboboxOption>
-          )}
-        </ComboboxOptions>
-        {query && filteredCommands.length === 0 && (
-          <p className='p-4 text-sm text-gray-500'>no results found</p>
+            </ComboboxOptions>
+            {query && filteredCommands.length === 0 && (
+              <p className='p-4 text-sm text-gray-500'>no results found</p>
+            )}
+          </>
         )}
       </Combobox>
     </>
@@ -167,6 +203,25 @@ export default function BookSearch({
     })
     .flat()
 
+  const createCustomCommand = (query: string) => {
+    const text = transformScripturetoText(query)
+    const scripture = transformTextToScripture(text)
+    if (scripture === '') {
+      return null
+    }
+    const customCommand: Command = {
+      id: `custom-go-${text}`,
+      title: scripture.asString ?? '',
+      action: async () => {
+        addHistory(scripture)
+        if (onSelectBook) {
+          onSelectBook(scripture)
+        }
+      },
+    }
+    return customCommand
+  }
+
   const recentCommands =
     history?.slice(-3).map(({ scripture, url }) => ({
       id: `go-${scripture.text}`,
@@ -199,6 +254,7 @@ export default function BookSearch({
         }
         placeholder='search books'
         ref={searchRef}
+        createCustomCommand={createCustomCommand}
       />
     </>
   )
