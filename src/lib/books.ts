@@ -104,7 +104,7 @@ function transformScripturetoText(scripture: string | Partial<Scripture>) {
       return ''
     }
     const bookNumber = books.indexOf(bookName) + 1 // TODO: check if bookNumber is on `scripture`
-    const bibleText = `${String(bookNumber).padStart(2, '0')}${String(chapter).padStart(3, '0')}${verse ?? defaultVerse}`
+    const bibleText = `${String(bookNumber).padStart(2, '0')}${String(chapter).padStart(3, '0')}${verse ? `${verse}`.padStart(3, '0') : defaultVerse}`
     return bibleText
   }
 }
