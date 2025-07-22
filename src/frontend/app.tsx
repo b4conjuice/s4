@@ -5,6 +5,7 @@ import HomePage from '@/frontend/routes/home'
 import HistoryPage from '@/frontend/routes/history'
 import TextPage from '@/frontend/routes/text'
 import NotesPage from '@/frontend/routes/notes'
+import NewNotePage from '@/frontend/routes/new-note'
 import BooksPage from '@/frontend/routes/books'
 import BookPage from '@/frontend/routes/book'
 import ChapterPage from '@/frontend/routes/chapter'
@@ -20,6 +21,7 @@ export default function App() {
           <Route path='/books/:book' element={<BookPage />} />
           <Route path='/books/:book/:chapter' element={<ChapterPage />} />
           <Route path='/notes' element={<NotesPage />} />
+          <Route path='/notes/new' element={<NewNotePage />} />
           <Route path='/text/:text' element={<TextPage />} />
         </Routes>
       </BrowserRouter>
