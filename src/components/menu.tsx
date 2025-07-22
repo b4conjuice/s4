@@ -1,36 +1,32 @@
-import { useState } from 'react'
 import { NavLink as Link } from 'react-router'
 import { Bars2Icon } from '@heroicons/react/20/solid'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
-import Modal from '@/components/modal'
+const nav = [
+  { text: 'home', href: '/' },
+  { text: 'history', href: '/history' },
+  { text: 'books', href: '/books' },
+]
 
-export default function Menu() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+export default function MenuComponent() {
   return (
-    <>
-      <button
-        type='button'
-        className='text-cb-yellow hover:text-cb-yellow/75'
-        onClick={() => {
-          setIsMenuOpen(true)
-        }}
-      >
+    <Menu>
+      <MenuButton className='text-cb-yellow hover:text-cb-yellow/75'>
         <Bars2Icon className='h-6 w-6' />
-      </button>
-      <Modal isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-        <ul className='divide-cb-dusty-blue flex flex-col space-y-4 divide-y'>
-          <li>
-            <Link to='/history' className='text-cb-pink hover:text-cb-pink/75'>
-              history
+      </MenuButton>
+
+      <MenuItems
+        className='bg-cb-dusty-blue/90 flex flex-col space-y-4 rounded p-4'
+        anchor='bottom start'
+      >
+        {nav.map(({ text, href }) => (
+          <MenuItem key={href}>
+            <Link to={href} className='text-cb-pink hover:text-cb-pink/75'>
+              {text}
             </Link>
-          </li>
-          <li>
-            <Link to='/books' className='text-cb-pink hover:text-cb-pink/75'>
-              books
-            </Link>
-          </li>
-        </ul>
-      </Modal>
-    </>
+          </MenuItem>
+        ))}
+      </MenuItems>
+    </Menu>
   )
 }
