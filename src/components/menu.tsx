@@ -1,4 +1,4 @@
-import { NavLink as Link } from 'react-router'
+import { NavLink as Link, useLocation } from 'react-router'
 import { Bars2Icon } from '@heroicons/react/20/solid'
 import {
   Menu as MenuRoot,
@@ -14,6 +14,8 @@ const nav = [
 ]
 
 export default function Menu() {
+  const location = useLocation()
+  const currentPath = location.pathname
   return (
     <MenuRoot>
       <MenuButton className='text-cb-yellow hover:text-cb-yellow/75'>
@@ -24,13 +26,19 @@ export default function Menu() {
         className='bg-cb-dusty-blue/90 flex flex-col space-y-4 rounded p-4'
         anchor='bottom start'
       >
-        {nav.map(({ text, href }) => (
-          <MenuItem key={href}>
-            <Link to={href} className='text-cb-pink hover:text-cb-pink/75'>
-              {text}
-            </Link>
-          </MenuItem>
-        ))}
+        {nav.map(({ text, href }) =>
+          currentPath === href ? (
+            <MenuItem key={href}>
+              <span className='text-cb-white'>{text}</span>
+            </MenuItem>
+          ) : (
+            <MenuItem key={href}>
+              <Link to={href} className='text-cb-pink hover:text-cb-pink/75'>
+                {text}
+              </Link>
+            </MenuItem>
+          )
+        )}
       </MenuItems>
     </MenuRoot>
   )
