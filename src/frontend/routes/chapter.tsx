@@ -9,10 +9,11 @@ import books, {
 } from '@/lib/books'
 
 export default function Chapter() {
-  const { book, chapter } = useParams()
+  const { book, chapter: chapterParam } = useParams()
   const navigate = useNavigate()
 
   const bookIndex = Number(book) - 1
+  const chapter = Number(chapterParam)
   const bookName = books[bookIndex]
   if (!bookName) {
     return (
@@ -22,7 +23,7 @@ export default function Chapter() {
   const chapters = booksAndChaptersMap[bookName] ?? 1
   const text = transformScripturetoText({
     bookName,
-    chapter: Number(chapter),
+    chapter,
   })
   const bookLink = getBookLink(text)
   const versesWithNotes = []
@@ -69,18 +70,20 @@ export default function Chapter() {
                   length: chapters,
                 },
                 (_, i) => i + 1
-              ).map((bookChapter: number) => {
-                return (
-                  <li key={bookChapter}>
+              ).map((bookChapter: number) => (
+                <li key={bookChapter}>
+                  {chapter === bookChapter ? (
+                    <span>{bookChapter}</span>
+                  ) : (
                     <Link
                       to={`/books/${book}/${bookChapter}`}
                       className='text-cb-pink hover:text-cb-pink/75 py-4 group-first:pt-0'
                     >
                       {bookChapter}
                     </Link>
-                  </li>
-                )
-              })}
+                  )}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
