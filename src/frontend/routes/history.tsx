@@ -1,10 +1,6 @@
 import { useRef, useState } from 'react'
 import { NavLink as Link } from 'react-router'
-import {
-  ChevronLeftIcon,
-  MagnifyingGlassIcon,
-  TrashIcon,
-} from '@heroicons/react/20/solid'
+import { MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/20/solid'
 
 import { Main, Title } from '@/components/ui'
 import BookSearch from '@/components/book-search'
@@ -12,6 +8,7 @@ import Modal from '@/components/modal'
 import Button from '@/components/ui/button'
 import { openBookLink } from '@/lib/books'
 import useHistory from '@/lib/useHistory'
+import Menu from '@/components/menu'
 
 export default function History() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
@@ -44,9 +41,7 @@ export default function History() {
       </Main>
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-4'>
-          <Link to='/' className='text-cb-yellow hover:text-cb-yellow/75'>
-            <ChevronLeftIcon className='h-6 w-6' />
-          </Link>
+          <Menu />
         </div>
         <div className='flex space-x-4'>
           <button

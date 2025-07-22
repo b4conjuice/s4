@@ -1,10 +1,11 @@
 import { useRef } from 'react'
 import { NavLink as Link, useNavigate } from 'react-router'
-import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 import { Main, Title } from '@/components/ui'
 import books from '@/lib/books'
 import BookSearch from '@/components/book-search'
+import Menu from '@/components/menu'
 
 export default function Books() {
   const searchRef = useRef<HTMLInputElement | null>(null)
@@ -42,14 +43,7 @@ export default function Books() {
       </Main>
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-4'>
-          <button
-            className='text-cb-yellow hover:text-cb-yellow/75'
-            onClick={async () => {
-              await navigate(-1)
-            }}
-          >
-            <ChevronLeftIcon className='h-6 w-6' />
-          </button>
+          <Menu />
         </div>
         <div className='flex space-x-4'>
           <button
