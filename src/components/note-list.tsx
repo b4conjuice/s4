@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { NavLink as Link } from 'react-router'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation' // TODO: use react-router
 import classNames from 'classnames'
 import { TagIcon } from '@heroicons/react/24/solid'
 
@@ -106,7 +106,7 @@ export default function NoteList({ notes }: { notes: Note[] }) {
         {results.map(note => (
           <li key={note.id} className='group flex space-x-2'>
             <Link
-              href={`/notes/${note.id}`}
+              to={`/notes/${note.id}`}
               className='text-cb-pink hover:text-cb-pink/75 flex grow items-center justify-between py-4 group-first:pt-0'
             >
               <div>
@@ -165,7 +165,7 @@ export default function NoteList({ notes }: { notes: Note[] }) {
           />
         )}
       </Modal> */}
-      <CommandPalette
+      {/* <CommandPalette
         commands={[
           {
             id: 'go-home',
@@ -182,7 +182,7 @@ export default function NoteList({ notes }: { notes: Note[] }) {
             },
           })),
         ]}
-      />
+      /> */}
     </>
   )
 }
