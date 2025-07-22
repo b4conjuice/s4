@@ -24,6 +24,8 @@ type Command = {
   action: (args?: unknown) => void | Promise<unknown>
 }
 
+const SHORTCUT_KEY = 'k'
+
 function CommandPalette({
   commands,
   defaultCommands,
@@ -42,7 +44,7 @@ function CommandPalette({
   // TODO: add option to disable this
   useEffect(() => {
     function onKeydown(e: KeyboardEvent) {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === SHORTCUT_KEY && (e.metaKey || e.ctrlKey)) {
         ref.current?.focus()
       }
     }
