@@ -75,7 +75,7 @@ function CommandPalette({
         onClose={() => {
           setQuery('')
         }}
-        className='bg-cb-blue divide-cb-dusty-blue ring-cb-mint divide-y overflow-hidden rounded-xl shadow-2xl ring-1'
+        className='divide-cb-dusty-blue bg-cb-blue ring-cb-blue focus-within:ring-cb-light-blue divide-y overflow-hidden rounded-xl shadow-2xl ring-1'
         virtual={{
           options: filteredCommands,
         }}
