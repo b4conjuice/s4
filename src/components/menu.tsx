@@ -1,6 +1,11 @@
 import { NavLink as Link } from 'react-router'
 import { Bars2Icon } from '@heroicons/react/20/solid'
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import {
+  Menu as MenuRoot,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from '@headlessui/react'
 
 const nav = [
   { text: 'home', href: '/' },
@@ -8,9 +13,9 @@ const nav = [
   { text: 'books', href: '/books' },
 ]
 
-export default function MenuComponent() {
+export default function Menu() {
   return (
-    <Menu>
+    <MenuRoot>
       <MenuButton className='text-cb-yellow hover:text-cb-yellow/75'>
         <Bars2Icon className='h-6 w-6' />
       </MenuButton>
@@ -27,6 +32,6 @@ export default function MenuComponent() {
           </MenuItem>
         ))}
       </MenuItems>
-    </Menu>
+    </MenuRoot>
   )
 }
