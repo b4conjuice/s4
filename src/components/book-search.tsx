@@ -226,7 +226,8 @@ export default function BookSearch({
   }
 
   const recentCommands =
-    history?.slice(0, 3).map(({ scripture, url }) => ({
+    history?.slice(0, 10).map(({ scripture, url }) => ({
+      // get 10 most recent
       id: `go-${scripture.text}`,
       title: `${scripture.asString}`,
       action: () => {
@@ -236,7 +237,7 @@ export default function BookSearch({
     })) ?? []
 
   const seenIds = new Set()
-  const uniqueRecentCommands = []
+  const uniqueRecentCommands = [] // recent history may have duplicates
 
   for (const obj of recentCommands) {
     const id = obj.id
@@ -252,7 +253,7 @@ export default function BookSearch({
         commands={commands}
         defaultCommands={
           showRecentCommands
-            ? [...defaultCommands, ...uniqueRecentCommands]
+            ? [...defaultCommands, ...uniqueRecentCommands.slice(0, 3)] // show 3 unique most recent
             : [...defaultCommands]
         }
         placeholder='search books'
