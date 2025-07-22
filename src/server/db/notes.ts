@@ -10,6 +10,8 @@ import { type Note } from '@/lib/types'
 import { db } from '@/server/db'
 import { notes } from '@/server/db/schema'
 
+const BOOK_TAG = '📖'
+
 export async function saveNote(note: Note) {
   const user = await auth()
 
@@ -18,12 +20,16 @@ export async function saveNote(note: Note) {
   const isList = note.title.startsWith('= ')
   const list = isList ? note.body.split('\n').filter(item => item !== '') : []
 
+  const tags = note?.tags ?? []
+  const newTags = tags.includes(BOOK_TAG) ? tags : [...tags, BOOK_TAG]
+
   const newNotes = await db
     .insert(notes)
     .values({
       ...note,
       list,
       author: user.userId,
+      tags: newTags,
     })
     .onConflictDoUpdate({
       target: notes.id,
@@ -32,7 +38,7 @@ export async function saveNote(note: Note) {
         title: note.title,
         body: note.body,
         list,
-        tags: note.tags,
+        tags: newTags,
       },
     })
     .returning()
