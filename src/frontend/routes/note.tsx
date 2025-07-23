@@ -83,6 +83,7 @@ export default function Note() {
 
         await saveNote(newNote)
         await refetch()
+        await utils.note.getAll.invalidate()
       }
     }
     if (isSignedIn && canSave) {
