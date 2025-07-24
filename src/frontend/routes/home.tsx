@@ -15,12 +15,13 @@ import {
 } from '@/lib/books'
 import useHistory from '@/lib/useHistory'
 import Menu from '@/components/menu'
+import Daily from '@/components/daily'
 
 export default function Home() {
   const { addHistory } = useHistory()
   const searchRef = useRef<HTMLInputElement | null>(null)
   const now = new Date()
-  const today = format(now, 'yyyy-MM-dd')
+  const today = format(now, 'yyyy/MM/dd')
   const { data: dtData } = api.sword.dt.useQuery({ date: today })
   const defaultCommands = []
   if (dtData !== undefined) {
@@ -45,8 +46,9 @@ export default function Home() {
         <div className='flex flex-grow flex-col space-y-4'>
           <Title>s4 ⚔️</Title>
           <div className='flex flex-grow flex-col justify-between space-y-4'>
-            <Swordle />
-            <Mwt />
+            <Daily />
+            {/* <Swordle /> */}
+            {/* <Mwt /> */}
             {/* <Sword /> */}
             <BookSearch
               searchRef={searchRef}

@@ -285,7 +285,7 @@ const buttonTypes = [
 const Home = () => {
   const [copiedText, copyToClipboard] = useCopyToClipboard()
   const now = new Date()
-  const today = format(now, 'yyyy-MM-dd')
+  const today = format(now, 'yyyy/MM/dd')
   const date = format(now, 'yyyyMMdd')
   const dateString = format(now, 'M.d.yy')
   const yesterday = format(subDays(now, 1), 'yyyy-MM-dd')

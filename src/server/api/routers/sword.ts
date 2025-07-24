@@ -38,8 +38,7 @@ export const swordRouter = createTRPCRouter({
   dt: publicProcedure
     .input(z.object({ date: z.string() }))
     .query(async ({ input }) => {
-      const date = String(input.date).replace(/-/g, '/')
-      const data: DTResponse = await requestDailyText(date)
+      const data: DTResponse = await requestDailyText(input.date)
       return data
     }),
 })
