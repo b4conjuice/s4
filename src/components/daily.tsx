@@ -71,7 +71,9 @@ function DTButton({
   streakInfo: StreakInfo
   setStreakInfo: Dispatch<SetStateAction<StreakInfo | undefined>>
 }) {
-  const readToday = false
+  const lastRead = streakInfo?.lastRead ?? null
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const readToday = lastRead === today
   const url = `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&alias=daily-text&date=${format(now, 'yyyyMMdd')}`
   const dateString = format(now, 'M.d.yy')
   return (
@@ -126,8 +128,10 @@ function DTChapterButton({
   const bibleText = transformScripturetoText(dailyTextScripture)
   const scripture = transformTextToScripture(bibleText)
   const url = getBookLink(bibleText)
-  const readToday = false
   const bookAndChapter = scripture ? scripture.asString : ''
+  const lastRead = streakInfo?.lastRead ?? null
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const readToday = lastRead === today
   if (!showButton) {
     return (
       <div className='flex gap-4'>
@@ -196,8 +200,10 @@ function SequenceButton({
   const text = transformScripturetoText('Gen. 1')
   const scripture = transformTextToScripture(text)
   const bookAndChapter = scripture ? scripture.asString : 'error'
-  const readToday = false
   const url = getBookLink(text)
+  const lastRead = streakInfo?.lastRead ?? null
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const readToday = lastRead === today
   return (
     <a
       className='bg-cb-dark-blue group w-full cursor-pointer rounded-lg border-none text-center text-lg'
