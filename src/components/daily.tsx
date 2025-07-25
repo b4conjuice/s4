@@ -190,6 +190,35 @@ function DTChapterButton({
   )
 }
 
+const getNextSequence = (sequence: string) => {
+  const [bookNumberAsString, chapterAsString] = sequence.split(':')
+  const bookNumber = Number(bookNumberAsString)
+  const chapter = Number(chapterAsString)
+  const bookNumberIndex = bookNumber - 1
+  const bookName = books[bookNumberIndex]
+  const chapters = bookName ? booksAndChaptersMap[bookName] : 1
+  const nextChapter = chapters && chapter >= chapters ? 1 : chapter + 1
+  const nextBookNumber =
+    chapters && chapter >= chapters
+      ? (bookNumber + 1) % books.length
+      : bookNumber
+  const next = `${nextBookNumber}:${nextChapter}`
+  return next
+}
+const getPrevSequence = (sequence: string) => {
+  const [bookNumberAsString, chapterAsString] = sequence.split(':')
+  const bookNumber = Number(bookNumberAsString)
+  const chapter = Number(chapterAsString)
+  const prevBookNumberIndex = bookNumber - 2
+  const prevBookName = books[prevBookNumberIndex]
+  const prevChapters = prevBookName ? booksAndChaptersMap[prevBookName] : 1
+  const prevChapter = chapter === 1 ? prevChapters : chapter - 1
+  const prevBookNumber = chapter === 1 ? bookNumber - 1 : bookNumber
+  const prev =
+    prevBookNumber === 0 ? `66:22` : `${prevBookNumber}:${prevChapter}`
+  return prev
+}
+
 function SequenceButton({
   streakInfo,
   setStreakInfo,
@@ -197,20 +226,28 @@ function SequenceButton({
   streakInfo: StreakInfo
   setStreakInfo: Dispatch<SetStateAction<StreakInfo | undefined>>
 }) {
-  const text = transformScripturetoText('Gen. 1')
-  const scripture = transformTextToScripture(text)
-  const bookAndChapter = scripture ? scripture.asString : 'error'
-  const url = getBookLink(text)
   const lastRead = streakInfo?.lastRead ?? null
   const today = format(new Date(), 'yyyy-MM-dd')
   const readToday = lastRead === today
+
+  const sequence = streakInfo?.sequence ?? '1:1'
+  const prevSequence = getPrevSequence(sequence)
+  const [bookNumber, chapter] = (readToday ? prevSequence : sequence).split(':')
+  const text = `${bookNumber}${(chapter ?? '').padStart(3, '0')}001`
+  const bookAndChapter = `${books[Number(bookNumber) - 1]} ${chapter}`
+  const url = getBookLink(text)
   return (
     <a
       className='bg-cb-dark-blue group w-full cursor-pointer rounded-lg border-none text-center text-lg'
       href={url}
       target='_blank'
       onClick={() => {
-        incrementStreak({ streakInfo, setStreakInfo })
+        if (!readToday) {
+          const newStreakInfo = { ...streakInfo }
+          const newSequence = getNextSequence(sequence)
+          newStreakInfo.sequence = newSequence
+          incrementStreak({ streakInfo: newStreakInfo, setStreakInfo })
+        }
       }}
     >
       <span
@@ -238,7 +275,6 @@ function MWTButton({
   isLoading: boolean
   children: React.ReactNode
 }) {
-  const [copiedText, copyToClipboard] = useCopyToClipboard()
   const [showButton, setShowButton] = useState(false)
   if (!showButton) {
     return (
