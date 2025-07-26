@@ -15,7 +15,6 @@ import {
 } from '@heroicons/react/20/solid'
 import { useDebounce } from '@uidotdev/usehooks'
 
-import { saveNote } from '@/server/db/notes'
 import BookSearch from '@/components/book-search'
 import { getBookLink, transformScripturetoText } from '@/lib/books'
 import Textarea from '@/components/textarea'
@@ -24,14 +23,38 @@ import { api } from '@/trpc/react'
 import { Main } from '@/components/ui'
 import Modal from '@/components/modal'
 import Button from '@/components/ui/button'
+import type { Note } from '@/lib/types'
 
 const TABS = ['default', 'settings'] as const
 type Tab = (typeof TABS)[number]
 
 export default function Note() {
   const { id } = useParams()
-  const { data: note, refetch } = api.note.get.useQuery({ id: Number(id) })
+  const { data: note } = api.note.get.useQuery({ id: Number(id) })
   const utils = api.useUtils()
+  const { mutate: saveNote } = api.note.save.useMutation({
+    onSuccess: async () => {
+      await utils.note.getAll.invalidate()
+    },
+    onMutate: async newNote => {
+      // Cancel outgoing fetches (so they don't overwrite our optimistic update)
+      await utils.note.get.cancel()
+
+      // Get the data from the queryCache
+      const prevData = utils.note.get.getData()
+
+      // Optimistically update the data with our new post
+      if (note) {
+        utils.note.get.setData({ id: note.id }, () => ({
+          ...note,
+          ...newNote,
+        }))
+      }
+
+      // Return the previous data so we can revert if something goes wrong
+      return { prevData }
+    },
+  })
   const { mutate: deleteNote } = api.note.deleteNote.useMutation({
     onSuccess: async () => {
       await utils.note.getAll.invalidate()
@@ -81,9 +104,7 @@ export default function Note() {
           body: body.join('\n\n'),
         }
 
-        await saveNote(newNote)
-        await refetch()
-        await utils.note.getAll.invalidate()
+        saveNote(newNote)
       }
     }
     if (isSignedIn && canSave) {
@@ -192,20 +213,7 @@ export default function Note() {
                       title: title ?? '',
                       body: body.join('\n\n'),
                     }
-                    await saveNote(newNote)
-                    await refetch()
-                  } else {
-                    const [title, ...body] = text.split('\n\n')
-                    const newNote = {
-                      text,
-                      title: title ?? '',
-                      body: body.join('\n\n'),
-                      list: [],
-                      tags: [],
-                    }
-                    const id = await saveNote(newNote)
-                    setText('')
-                    await navigate(`/notes/${id}`)
+                    saveNote(newNote)
                   }
                 }}
                 disabled={!canSave}
