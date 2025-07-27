@@ -113,11 +113,14 @@ function transformScripturetoText(scripture: string | Partial<Scripture>) {
     const [bookChapter, bookVerse] = bookChapterVerse?.split(':') ?? []
 
     if (!bookName || !bookChapter) {
+      console.log(
+        `transformScripturetoText: invalid scripture string '${scripture}': must follow this format: <bookName> <chapter>`
+      )
       return ''
     }
     const bookIndex = findBookIndex(bookName)
     if (bookIndex < 0) {
-      console.log('transformScripturetoText: bookName not found')
+      console.log(`transformScripturetoText: bookName '${bookName}' not found`)
       return ''
     }
     const bookNumber = bookIndex + 1
@@ -127,6 +130,21 @@ function transformScripturetoText(scripture: string | Partial<Scripture>) {
   } else {
     const { bookName, chapter, verse } = scripture
     if (!bookName || !chapter) {
+      if (!bookName && !chapter) {
+        console.log(
+          'transformScripturetoText: scripture object is missing bookName and chapter'
+        )
+      } else {
+        if (!bookName) {
+          console.log(
+            'transformScripturetoText: scripture object is missing bookName'
+          )
+        } else {
+          console.log(
+            'transformScripturetoText: scripture object is missing chapter'
+          )
+        }
+      }
       return ''
     }
     const bookNumber = books.indexOf(bookName) + 1 // TODO: check if bookNumber is on `scripture`
@@ -137,7 +155,9 @@ function transformScripturetoText(scripture: string | Partial<Scripture>) {
 
 function transformTextToScripture(text: string) {
   if (text.length !== 8) {
-    console.log('invalid text')
+    console.log(
+      `transformTextToScripture: invalid text ${text}: text must be 8 characters`
+    )
     return ''
   }
   const bookNumber = Number(text.slice(0, 2))
@@ -145,7 +165,9 @@ function transformTextToScripture(text: string) {
   const verse = Number(text.slice(5, 8))
   const bookName = books[bookNumber - 1]
   if (!bookName) {
-    console.log('invalid bookName')
+    console.log(
+      `transformTextToScripture: bookName not found, invalid bookNumber ${bookNumber} (first 3 characters of text)`
+    )
     return ''
   }
   const scripture: Scripture = {
