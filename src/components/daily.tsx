@@ -123,15 +123,6 @@ function DTChapterButton({
   const { data, isLoading } = api.sword.dt.useQuery({
     date: format(now, 'yyyy/MM/dd'),
   })
-  const dailyText = data?.dailyText ?? 'dailyText'
-  const dailyTextScripture = data?.scripture ?? 'dailyText'
-  const bibleText = transformScripturetoText(dailyTextScripture)
-  const scripture = transformTextToScripture(bibleText)
-  const url = getBookLink(bibleText)
-  const bookAndChapter = scripture ? scripture.asString : ''
-  const lastRead = streakInfo?.lastRead ?? null
-  const today = format(new Date(), 'yyyy-MM-dd')
-  const readToday = lastRead === today
   if (!showButton) {
     return (
       <div className='flex gap-4'>
@@ -153,29 +144,53 @@ function DTChapterButton({
       </div>
     )
   }
+  if (isLoading || !data) {
+    return (
+      <>
+        <div className='flex gap-4'>
+          <SkeletonButton>read daily text</SkeletonButton>
+          <Button
+            onClick={async () => {
+              await copyToClipboard(dailyText)
+              toast.success('copied daily text')
+            }}
+            className='flex-1/6 disabled:pointer-events-none disabled:opacity-25'
+            disabled={isLoading}
+          >
+            <DocumentDuplicateIcon className='mx-auto h-6 w-6' />
+          </Button>
+        </div>
+      </>
+    )
+  }
+  const dailyText = data.dailyText
+  const dailyTextScripture = data.scripture
+  const text = transformScripturetoText(dailyTextScripture)
+  const scripture = transformTextToScripture(text)
+  const url = getBookLink(text)
+  const bookAndChapter = scripture ? scripture.asString : ''
+  const lastRead = streakInfo?.lastRead ?? null
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const readToday = lastRead === today
   return (
     <div className='flex gap-4'>
-      {isLoading ? (
-        <SkeletonButton>read daily text</SkeletonButton>
-      ) : (
-        <a
-          className='bg-cb-dark-blue group w-full flex-5/6 cursor-pointer rounded-lg border-none text-center text-lg'
-          href={url}
-          target='_blank'
-          onClick={() => {
-            incrementStreak({ streakInfo, setStreakInfo })
-          }}
+      <a
+        className='bg-cb-dark-blue group w-full flex-5/6 cursor-pointer rounded-lg border-none text-center text-lg'
+        href={url}
+        target='_blank'
+        onClick={() => {
+          incrementStreak({ streakInfo, setStreakInfo })
+        }}
+      >
+        <span
+          className={`bg-sword-purple block translate-y-[-4px] transform rounded-lg p-3 text-lg duration-[600ms] ease-[cubic-bezier(.3,.7,.4,1)] group-hover:translate-y-[-6px] group-hover:duration-[250ms] group-active:translate-y-[-2px] group-active:duration-[34ms] hover:ease-[cubic-bezier(.3,.7,.4,1.5)] ${
+            readToday ? 'text-cb-yellow' : 'text-gray-100'
+          }`}
         >
-          <span
-            className={`bg-sword-purple block translate-y-[-4px] transform rounded-lg p-3 text-lg duration-[600ms] ease-[cubic-bezier(.3,.7,.4,1)] group-hover:translate-y-[-6px] group-hover:duration-[250ms] group-active:translate-y-[-2px] group-active:duration-[34ms] hover:ease-[cubic-bezier(.3,.7,.4,1.5)] ${
-              readToday ? 'text-cb-yellow' : 'text-gray-100'
-            }`}
-          >
-            read daily text: {bookAndChapter}
-            {readToday ? ' again' : ''}
-          </span>
-        </a>
-      )}
+          read daily text: {bookAndChapter}
+          {readToday ? ' again' : ''}
+        </span>
+      </a>
       <Button
         onClick={async () => {
           await copyToClipboard(dailyText)
