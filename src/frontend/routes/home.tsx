@@ -24,16 +24,16 @@ export default function Home() {
   const today = format(now, 'yyyy/MM/dd')
   const { data: dtData } = api.sword.dt.useQuery({ date: today })
   const defaultCommands = []
-  if (dtData !== undefined) {
-    const dailyText = dtData.scripture ?? 'dailyText'
-    const bibleText = transformScripturetoText(dailyText)
-    const scripture = transformTextToScripture(bibleText)
+  if (dtData?.scripture) {
+    const dailyText = dtData.scripture
+    const text = transformScripturetoText(dailyText)
+    const scripture = transformTextToScripture(text)
     if (scripture !== '') {
       defaultCommands.push({
         id: 'dailyText',
         title: `DT: ${dailyText}`,
         action: () => {
-          const bookLink = getBookLink(bibleText)
+          const bookLink = getBookLink(text)
           addHistory(scripture)
           window.open(bookLink)
         },
