@@ -210,6 +210,9 @@ export default function BookSearch({
 
   const createCustomCommand = (query: string) => {
     const text = transformScripturetoText(query)
+    if (text === '') {
+      return null
+    }
     const scripture = transformTextToScripture(text)
     if (scripture === '') {
       return null
