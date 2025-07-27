@@ -22,6 +22,7 @@ type Command = {
   title: string
   subtitle?: string
   action: (args?: unknown) => void | Promise<unknown>
+  bookName: string
 }
 
 const SHORTCUT_KEY = 'k'
@@ -55,7 +56,7 @@ function CommandPalette({
   }, [ref])
 
   const fuse = new Fuse(commands, {
-    keys: ['id', 'title', { name: 'name', weight: 2 }],
+    keys: ['bookName', 'id', 'title'],
   })
 
   const customCommand =
@@ -201,6 +202,7 @@ export default function BookSearch({
               onSelectBook(scripture)
             }
           },
+          bookName: scripture.bookName,
         }
       })
     })
@@ -221,6 +223,7 @@ export default function BookSearch({
           onSelectBook(scripture)
         }
       },
+      bookName: scripture.bookName,
     }
     return customCommand
   }
@@ -234,6 +237,7 @@ export default function BookSearch({
         addHistory(scripture)
         window.open(url)
       },
+      bookName: scripture.bookName,
     })) ?? []
 
   const seenIds = new Set()

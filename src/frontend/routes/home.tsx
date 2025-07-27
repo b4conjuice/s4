@@ -37,6 +37,7 @@ export default function Home() {
           addHistory(scripture)
           window.open(bookLink)
         },
+        bookName: scripture.bookName,
       })
     }
   }
