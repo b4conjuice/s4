@@ -69,7 +69,8 @@ const booksAndChaptersMap: Record<string, number> = {
   'Rev.': 22,
 }
 
-const books = Object.keys(booksAndChaptersMap)
+const books = Object.keys(booksAndChaptersMap) // TODO: rename to bookNames to be more explicit
+const booksCaseInsensitive = books.map(book => book.toLowerCase())
 
 const bookIndex = (bookName: string) =>
   books.findIndex(b => b === bookName.replace(' ', ' ')) + 1
@@ -85,6 +86,24 @@ function openBookLink(scripture: Scripture) {
   window.open(chapterLink)
 }
 
+function findBookIndex(bookName: string) {
+  const bookNameLowerCase = bookName.toLowerCase()
+  const bookIndexWithNoChanges = booksCaseInsensitive.indexOf(bookNameLowerCase)
+  if (bookIndexWithNoChanges > -1) {
+    return bookIndexWithNoChanges
+  }
+  if (!bookNameLowerCase.includes('.')) {
+    const bookNameWithPeriodAdded = `${bookNameLowerCase}.`
+    const bookIndexWithPeriodAdded = booksCaseInsensitive.indexOf(
+      bookNameWithPeriodAdded
+    )
+    if (bookIndexWithPeriodAdded > -1) {
+      return bookIndexWithPeriodAdded
+    }
+  }
+  return -1
+}
+
 function transformScripturetoText(scripture: string | Partial<Scripture>) {
   const defaultVerse = '001'
   if (typeof scripture === 'string') {
@@ -96,7 +115,12 @@ function transformScripturetoText(scripture: string | Partial<Scripture>) {
     if (!bookName || !bookChapter) {
       return ''
     }
-    const bookNumber = books.indexOf(bookName) + 1
+    const bookIndex = findBookIndex(bookName)
+    if (bookIndex < 0) {
+      console.log('transformScripturetoText: bookName not found')
+      return ''
+    }
+    const bookNumber = bookIndex + 1
     const verse = bookVerse ? String(bookVerse).padStart(3, '0') : defaultVerse
     const bibleText = `${String(bookNumber).padStart(2, '0')}${String(bookChapter).padStart(3, '0')}${verse}`
     return bibleText
