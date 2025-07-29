@@ -70,7 +70,9 @@ const booksAndChaptersMap: Record<string, number> = {
 }
 
 const books = Object.keys(booksAndChaptersMap) // TODO: rename to bookNames to be more explicit
-const booksCaseInsensitive = books.map(book => book.toLowerCase())
+const normalizeBookName = (bookName: string) =>
+  bookName.replace(' ', ' ').toLowerCase()
+const normalizedBookNames = books.map(normalizeBookName)
 
 const bookIndex = (bookName: string) =>
   books.findIndex(b => b === bookName.replace(' ', ' ')) + 1
@@ -87,14 +89,14 @@ function openBookLink(scripture: Scripture) {
 }
 
 function findBookIndex(bookName: string) {
-  const bookNameLowerCase = bookName.toLowerCase()
-  const bookIndexWithNoChanges = booksCaseInsensitive.indexOf(bookNameLowerCase)
+  const normalizedBookName = normalizeBookName(bookName)
+  const bookIndexWithNoChanges = normalizedBookNames.indexOf(normalizedBookName)
   if (bookIndexWithNoChanges > -1) {
     return bookIndexWithNoChanges
   }
-  if (!bookNameLowerCase.includes('.')) {
-    const bookNameWithPeriodAdded = `${bookNameLowerCase}.`
-    const bookIndexWithPeriodAdded = booksCaseInsensitive.indexOf(
+  if (!normalizedBookName.includes('.')) {
+    const bookNameWithPeriodAdded = `${normalizedBookName}.`
+    const bookIndexWithPeriodAdded = normalizedBookNames.indexOf(
       bookNameWithPeriodAdded
     )
     if (bookIndexWithPeriodAdded > -1) {
