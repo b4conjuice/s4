@@ -25,6 +25,7 @@ export default function Book() {
             <ul className='grid grid-cols-6 gap-2'>
               {books.map((bookName, index) => {
                 const currentBookIndex = index
+                const currentBookNumber = currentBookIndex + 1
                 const shortBookName = bookName.replace('.', '').slice(0, 3)
                 return (
                   <li key={index} className='group'>
@@ -32,7 +33,7 @@ export default function Book() {
                       <span>{shortBookName}</span>
                     ) : (
                       <Link
-                        to={`/books/${currentBookIndex}`}
+                        to={`/books/${currentBookNumber}`}
                         className='text-cb-pink hover:text-cb-pink/75'
                       >
                         {shortBookName}
