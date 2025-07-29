@@ -1,5 +1,4 @@
-import { NavLink as Link, useNavigate, useParams } from 'react-router'
-import { ChevronLeftIcon } from '@heroicons/react/20/solid'
+import { NavLink as Link, useParams } from 'react-router'
 
 import { Main, Title } from '@/components/ui'
 import books, {
@@ -7,11 +6,10 @@ import books, {
   getBookLink,
   transformScripturetoText,
 } from '@/lib/books'
+import Menu from '@/components/menu'
 
 export default function Chapter() {
   const { book, chapter: chapterParam } = useParams()
-  const navigate = useNavigate()
-
   const bookIndex = Number(book) - 1
   const chapter = Number(chapterParam)
   const bookName = books[bookIndex]
@@ -26,7 +24,7 @@ export default function Chapter() {
     chapter,
   })
   const bookLink = getBookLink(text)
-  const versesWithNotes = []
+  const versesWithNotes = [] // TODO
 
   return (
     <>
@@ -91,14 +89,7 @@ export default function Chapter() {
       </Main>
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-4'>
-          <button
-            className='text-cb-yellow hover:text-cb-yellow/75'
-            onClick={async () => {
-              await navigate(-1)
-            }}
-          >
-            <ChevronLeftIcon className='h-6 w-6' />
-          </button>
+          <Menu />
         </div>
         <div className='flex space-x-4'></div>
       </footer>
