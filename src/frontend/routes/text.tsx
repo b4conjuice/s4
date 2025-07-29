@@ -1,8 +1,11 @@
 import { NavLink as Link, useNavigate, useParams } from 'react-router'
-import { ChevronLeftIcon } from '@heroicons/react/20/solid'
+import { ChevronLeftIcon, PencilSquareIcon } from '@heroicons/react/20/solid'
 
 import { Main, Title } from '@/components/ui'
 import { transformTextToScripture } from '@/lib/books'
+import { api } from '@/trpc/react'
+import NoteListSkeleton from '@/components/note-list-skeleton'
+import NoteList from '@/components/note-list'
 
 export default function Notes() {
   const navigate = useNavigate()
@@ -18,28 +21,19 @@ export default function Notes() {
       </Main>
     )
   }
-  const notes: { id: string; title: string }[] = []
+  const { data: notes, isFetching } = api.note.getScriptureNotes.useQuery({
+    text,
+  })
   return (
     <>
       <Main className='flex flex-col p-4'>
         <div className='flex flex-grow flex-col space-y-4'>
           <Title>{scripture.asString}</Title>
-          <div className='flex flex-grow flex-col justify-between space-y-4'>
-            {notes.length > 0 && (
-              <ul className='divide-cb-dusty-blue divide-y'>
-                {notes.map((note, index) => (
-                  <li key={index} className='py-4'>
-                    <Link
-                      to={`/text/${text}/${note.id}`}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='text-cb-pink hover:text-cb-pink/75 truncate'
-                    >
-                      {note.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          <div className='flex flex-grow flex-col space-y-4'>
+            {isFetching ? (
+              <NoteListSkeleton />
+            ) : (
+              <NoteList notes={notes ?? []} />
             )}
           </div>
         </div>
@@ -55,7 +49,14 @@ export default function Notes() {
             <ChevronLeftIcon className='h-6 w-6' />
           </button>
         </div>
-        <div className='flex space-x-4'></div>
+        <div className='flex space-x-4'>
+          <Link
+            className='text-cb-yellow hover:text-cb-yellow/75 disabled:pointer-events-none disabled:opacity-25'
+            to='new'
+          >
+            <PencilSquareIcon className='h-6 w-6' />
+          </Link>
+        </div>
       </footer>
     </>
   )

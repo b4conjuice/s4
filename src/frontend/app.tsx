@@ -25,6 +25,11 @@ export default function App() {
           <Route path='/notes/new' element={<NewNotePage />} />
           <Route path='/notes/:id' element={<NotePage />} />
           <Route path='/text/:text' element={<TextPage />} />
+          <Route
+            path='/text/:text/new'
+            element={<NewNotePage noteType='scripture' />}
+          />
+          <Route path='/text/:text/:id' element={<NotePage />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer

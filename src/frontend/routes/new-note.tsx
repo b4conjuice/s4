@@ -1,17 +1,26 @@
 import { useRef, useState } from 'react'
-import { NavLink as Link, useNavigate } from 'react-router'
+import { NavLink as Link, useNavigate, useParams } from 'react-router'
 import { SignedIn } from '@clerk/nextjs'
 import {
   ArrowDownOnSquareIcon,
   ChevronLeftIcon,
 } from '@heroicons/react/20/solid'
 
-import { saveNote } from '@/server/db/notes'
+import {
+  saveNote,
+  saveRelatedScriptureNote,
+  saveScriptureNote,
+} from '@/server/db/notes'
 import BookSearch from '@/components/book-search'
-import { getBookLink, transformScripturetoText } from '@/lib/books'
+import {
+  getBookLink,
+  transformScripturetoText,
+  transformTextToScripture,
+} from '@/lib/books'
 import useLocalStorage from '@/lib/useLocalStorage'
 
-export default function NewNote() {
+export default function NewNote({ noteType }: { noteType?: string }) {
+  const { text: scriptureText } = useParams()
   const navigate = useNavigate()
   const searchRef = useRef<HTMLInputElement | null>(null)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
@@ -112,9 +121,29 @@ export default function NewNote() {
                     list: [],
                     tags: [],
                   }
-                  const id = await saveNote(newNote)
+                  const isScriptureNote =
+                    noteType === 'scripture' && scriptureText !== undefined
+                  if (isScriptureNote) {
+                    console.log('creating scripture note')
+                  }
+                  const id = await (isScriptureNote
+                    ? saveScriptureNote(newNote)
+                    : saveNote(newNote))
+                  if (isScriptureNote && scriptureText) {
+                    const scripture = transformTextToScripture(scriptureText)
+                    if (scripture) {
+                      await saveRelatedScriptureNote({
+                        noteId: id,
+                        text: scriptureText,
+                      })
+                    }
+                  }
                   setText('')
-                  await navigate(`/notes/${id}`)
+                  await navigate(
+                    isScriptureNote
+                      ? `/text/${scriptureText}/${id}`
+                      : `/notes/${id}`
+                  )
                 }}
                 disabled={!canSave}
               >

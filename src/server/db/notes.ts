@@ -4,13 +4,14 @@ import 'server-only'
 
 import { revalidatePath } from 'next/cache'
 import { auth } from '@clerk/nextjs/server'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, inArray } from 'drizzle-orm'
 
 import { type Note } from '@/lib/types'
 import { db } from '@/server/db'
-import { notes } from '@/server/db/schema'
+import { notes, scriptureNotes } from '@/server/db/schema'
 
 const BOOK_TAG = '📖'
+const SWORD_TAG = '⚔️'
 
 export async function saveNote(note: Note) {
   const user = await auth()
@@ -53,6 +54,80 @@ export async function saveNote(note: Note) {
   return newNote.id
 }
 
+export async function saveScriptureNote(note: Note) {
+  const user = await auth()
+
+  if (!user.userId) throw new Error('unauthorized')
+
+  const isList = note.title.startsWith('= ')
+  const list = isList ? note.body.split('\n').filter(item => item !== '') : []
+
+  const tags = note?.tags ?? []
+  const newTags = [
+    ...tags,
+    ...(tags.includes(BOOK_TAG) ? [] : [BOOK_TAG]),
+    ...(tags.includes(SWORD_TAG) ? [] : [SWORD_TAG]),
+  ]
+
+  const newNotes = await db
+    .insert(notes)
+    .values({
+      ...note,
+      list,
+      author: user.userId,
+      tags: newTags,
+    })
+    .onConflictDoUpdate({
+      target: notes.id,
+      set: {
+        text: note.text,
+        title: note.title,
+        body: note.body,
+        list,
+        tags: newTags,
+      },
+    })
+    .returning()
+  if (!newNotes || newNotes.length < 0) {
+    throw new Error('something went wrong')
+  }
+  const newNote = newNotes[0]
+  if (!newNote) {
+    throw new Error('something went wrong')
+  }
+
+  revalidatePath(`/notes/${newNote.id}`)
+  return newNote.id
+}
+
+export async function saveRelatedScriptureNote({
+  noteId,
+  text,
+}: {
+  noteId: number
+  text: string
+}) {
+  const user = await auth()
+
+  if (!user.userId) throw new Error('unauthorized')
+
+  const relatedScriptureNote = {
+    noteId,
+    text,
+  }
+
+  await db
+    .insert(scriptureNotes)
+    .values(relatedScriptureNote)
+    .onConflictDoUpdate({
+      target: scriptureNotes.noteId,
+      set: {
+        noteId,
+        text,
+      },
+    })
+}
+
 export async function getNotes() {
   const user = await auth()
 
@@ -71,6 +146,22 @@ export async function getNote(id: number) {
   })
 
   return note
+}
+
+export async function getScriptureNotes(text: string) {
+  const user = await auth()
+
+  if (!user.userId) throw new Error('unauthorized')
+
+  const scriptureNotes = await db.query.scriptureNotes.findMany({
+    where: (model, { eq }) => eq(model.text, text),
+  })
+  const scriptureNoteIds = scriptureNotes.map(note => note.noteId)
+  const foundNotes = db
+    .select()
+    .from(notes)
+    .where(inArray(notes.id, scriptureNoteIds))
+  return foundNotes
 }
 
 export async function deleteNote(id: number, currentPath = '/') {

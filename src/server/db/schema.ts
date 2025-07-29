@@ -1,9 +1,9 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import {
-  index,
+  integer,
   pgTable,
   pgTableCreator,
   serial,
@@ -36,3 +36,15 @@ export const notes = pgTable('n4_note', {
     () => new Date()
   ),
 })
+
+export const scriptureNotes = createTable('scripture_note', {
+  noteId: integer('note_id').notNull().primaryKey(),
+  text: varchar('text').notNull(),
+})
+
+export const scriptureNotesRelations = relations(scriptureNotes, ({ one }) => ({
+  scripture: one(notes, {
+    fields: [scriptureNotes.noteId],
+    references: [notes.id],
+  }),
+}))

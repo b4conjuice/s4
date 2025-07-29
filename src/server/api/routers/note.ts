@@ -1,7 +1,13 @@
 import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
-import { deleteNote, getNote, getNotes, saveNote } from '@/server/db/notes'
+import {
+  deleteNote,
+  getNote,
+  getNotes,
+  getScriptureNotes,
+  saveNote,
+} from '@/server/db/notes'
 
 export const noteRouter = createTRPCRouter({
   getAll: publicProcedure.query(async () => {
@@ -13,6 +19,12 @@ export const noteRouter = createTRPCRouter({
     .query(async ({ input }) => {
       const note = await getNote(input.id)
       return note
+    }),
+  getScriptureNotes: publicProcedure
+    .input(z.object({ text: z.string() }))
+    .query(async ({ input }) => {
+      const notes = await getScriptureNotes(input.text)
+      return notes
     }),
   save: publicProcedure
     .input(
