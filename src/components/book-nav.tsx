@@ -11,7 +11,7 @@ export default function BookNav({
     <ul className='grid grid-cols-6 gap-2'>
       {books.map((bookName, index) => {
         const bookNumber = index + 1
-        const shortBookName = bookName.replace('.', '').slice(0, 3)
+        const shortBookName = bookName.replace('.', '').slice(0, 4)
         return (
           <li key={index} className='group'>
             {index === currentBookIndex ? (
