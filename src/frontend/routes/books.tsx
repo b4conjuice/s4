@@ -3,7 +3,7 @@ import { NavLink as Link, useNavigate } from 'react-router'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 import { Main, Title } from '@/components/ui'
-import books from '@/lib/books'
+import books, { transformScripturetoText } from '@/lib/books'
 import BookSearch from '@/components/book-search'
 import Menu from '@/components/menu'
 
@@ -34,8 +34,13 @@ export default function Books() {
             <BookSearch
               searchRef={searchRef}
               onSelectBook={async scripture => {
-                const { bookNumber, chapter } = scripture
-                await navigate(`/books/${bookNumber}/${chapter}`)
+                const { bookNumber, chapter, verse } = scripture
+                if (verse) {
+                  const text = transformScripturetoText(scripture)
+                  await navigate(`/text/${text}`)
+                } else {
+                  await navigate(`/books/${bookNumber}/${chapter}`)
+                }
               }}
             />
           </div>
