@@ -6,6 +6,7 @@ import {
   getNote,
   getNotes,
   getScriptureNotes,
+  getUniqueNoteTexts,
   saveNote,
 } from '@/server/db/notes'
 
@@ -25,6 +26,12 @@ export const noteRouter = createTRPCRouter({
     .query(async ({ input }) => {
       const notes = await getScriptureNotes(input.text)
       return notes
+    }),
+  getUniqueNoteTexts: publicProcedure
+    .input(z.object({ bookChapterText: z.string() }))
+    .query(async ({ input }) => {
+      const texts = await getUniqueNoteTexts(input.bookChapterText)
+      return texts
     }),
   save: publicProcedure
     .input(

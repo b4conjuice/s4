@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 import { Main, Title } from '@/components/ui'
@@ -12,11 +12,16 @@ import Menu from '@/components/menu'
 import BookSearch from '@/components/book-search'
 import BookNav from '@/components/book-nav'
 import ChapterNav from '@/components/chapter-nav'
+import { api } from '@/trpc/react'
 
 export default function Chapter() {
   const { book, chapter: chapterParam } = useParams()
   const searchRef = useRef<HTMLInputElement | null>(null)
   const navigate = useNavigate()
+  const bookChapterText = `${String(book).padStart(2, '0')}${String(chapterParam).padStart(3, '0')}` // TODO: refactor from books.ts
+  const { data: texts, isFetching } = api.note.getUniqueNoteTexts.useQuery({
+    bookChapterText,
+  })
   if (!book) {
     return <Main className='flex flex-col p-4'>book param is required</Main>
   }
@@ -34,8 +39,6 @@ export default function Chapter() {
     chapter,
   })
   const bookLink = getBookLink(text)
-  const versesWithNotes = [] // TODO
-
   return (
     <>
       <Main className='flex flex-col p-4'>
@@ -44,6 +47,7 @@ export default function Chapter() {
             <button
               type='button'
               onClick={() => {
+                // TODO: change to link
                 window.open(bookLink)
               }}
               className='text-cb-pink hover:text-cb-pink/75 hover:cursor-pointer'
@@ -60,6 +64,29 @@ export default function Chapter() {
                 currentChapter={chapter}
               />
             </div>
+            {isFetching || !texts ? (
+              <p>loading...</p>
+            ) : texts.length > 0 ? (
+              <ul className='divide-cb-dusty-blue divide-y'>
+                {texts.map(text => {
+                  const verse = Number(text.slice(5, 8)) // TODO: refactor from books.ts
+                  return (
+                    <li key={text} className='group flex space-x-2'>
+                      <Link
+                        to={`/text/${text}`}
+                        className='text-cb-pink hover:text-cb-pink/75 flex grow items-center justify-between py-4 group-first:pt-0'
+                      >
+                        <div>
+                          {bookName} {chapter}:{verse}
+                        </div>
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : (
+              <p>no verses found</p>
+            )}
             <BookSearch
               searchRef={searchRef}
               onSelectBook={async scripture => {

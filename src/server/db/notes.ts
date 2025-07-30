@@ -4,7 +4,7 @@ import 'server-only'
 
 import { revalidatePath } from 'next/cache'
 import { auth } from '@clerk/nextjs/server'
-import { and, eq, inArray } from 'drizzle-orm'
+import { and, eq, inArray, like } from 'drizzle-orm'
 
 import { type Note } from '@/lib/types'
 import { db } from '@/server/db'
@@ -162,6 +162,19 @@ export async function getScriptureNotes(text: string) {
     .from(notes)
     .where(inArray(notes.id, scriptureNoteIds))
   return foundNotes
+}
+
+export async function getUniqueNoteTexts(bookChapterText: string) {
+  const user = await auth()
+
+  if (!user.userId) throw new Error('unauthorized')
+
+  const matchingNotes: { text: string }[] = await db
+    .selectDistinct({ text: scriptureNotes.text })
+    .from(scriptureNotes)
+    .where(like(scriptureNotes.text, `${bookChapterText}%`))
+
+  return matchingNotes.map(note => note.text)
 }
 
 export async function deleteNote(id: number, currentPath = '/') {
