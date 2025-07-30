@@ -2,7 +2,7 @@ import { NavLink as Link, useNavigate, useParams } from 'react-router'
 import { ChevronLeftIcon, PencilSquareIcon } from '@heroicons/react/20/solid'
 
 import { Main, Title } from '@/components/ui'
-import { transformTextToScripture } from '@/lib/books'
+import { getBookLink, transformTextToScripture } from '@/lib/books'
 import { api } from '@/trpc/react'
 import NoteListSkeleton from '@/components/note-list-skeleton'
 import NoteList from '@/components/note-list'
@@ -24,11 +24,20 @@ export default function Notes() {
   const { data: notes, isFetching } = api.note.getScriptureNotes.useQuery({
     text,
   })
+  const bookLink = getBookLink(text)
   return (
     <>
       <Main className='flex flex-col p-4'>
         <div className='flex flex-grow flex-col space-y-4'>
-          <Title>{scripture.asString}</Title>
+          <Title>
+            <a
+              className='text-cb-pink hover:text-cb-pink/75 hover:cursor-pointer'
+              href={bookLink}
+              target='_blank'
+            >
+              {scripture.asString}
+            </a>
+          </Title>
           <div className='flex flex-grow flex-col space-y-4'>
             {isFetching ? (
               <NoteListSkeleton />
