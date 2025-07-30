@@ -1,14 +1,19 @@
-import { NavLink as Link, useNavigate, useParams } from 'react-router'
-import { ChevronLeftIcon, PencilSquareIcon } from '@heroicons/react/20/solid'
+import { NavLink as Link, useParams } from 'react-router'
+import { PencilSquareIcon } from '@heroicons/react/20/solid'
 
 import { Main, Title } from '@/components/ui'
-import { getBookLink, transformTextToScripture } from '@/lib/books'
+import {
+  booksAndChaptersMap,
+  getBookLink,
+  transformTextToScripture,
+} from '@/lib/books'
 import { api } from '@/trpc/react'
 import NoteListSkeleton from '@/components/note-list-skeleton'
 import NoteList from '@/components/note-list'
+import Menu from '@/components/menu'
+import BookMenu from '@/components/book-menu'
 
-export default function Notes() {
-  const navigate = useNavigate()
+export default function Text() {
   const { text } = useParams()
   if (!text) {
     return <Main className='flex flex-col p-4'>`text` is required</Main>
@@ -25,6 +30,7 @@ export default function Notes() {
     text,
   })
   const bookLink = getBookLink(text)
+  const chapters = booksAndChaptersMap[scripture.bookName] ?? 1
   return (
     <>
       <Main className='flex flex-col p-4'>
@@ -49,14 +55,13 @@ export default function Notes() {
       </Main>
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-4'>
-          <button
-            className='text-cb-yellow hover:text-cb-yellow/75'
-            onClick={async () => {
-              await navigate(-1)
-            }}
-          >
-            <ChevronLeftIcon className='h-6 w-6' />
-          </button>
+          <Menu />
+          <BookMenu
+            currentBookIndex={scripture.bookNumber - 1}
+            bookNumber={String(scripture.bookNumber)}
+            chapters={chapters}
+            currentChapter={Number(scripture.chapter)}
+          />
         </div>
         <div className='flex space-x-4'>
           <Link
