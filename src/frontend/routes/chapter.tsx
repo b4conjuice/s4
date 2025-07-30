@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { NavLink as Link, useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 import { Main, Title } from '@/components/ui'
@@ -10,14 +10,19 @@ import books, {
 } from '@/lib/books'
 import Menu from '@/components/menu'
 import BookSearch from '@/components/book-search'
+import BookNav from '@/components/book-nav'
+import ChapterNav from '@/components/chapter-nav'
 
 export default function Chapter() {
   const { book, chapter: chapterParam } = useParams()
   const searchRef = useRef<HTMLInputElement | null>(null)
   const navigate = useNavigate()
-  const bookIndex = Number(book) - 1
+  if (!book) {
+    return <Main className='flex flex-col p-4'>book param is required</Main>
+  }
+  const currentBookIndex = Number(book) - 1
   const chapter = Number(chapterParam)
-  const bookName = books[bookIndex]
+  const bookName = books[currentBookIndex]
   if (!bookName) {
     return (
       <Main className='flex flex-col p-4'>book not found for book {book}</Main>
@@ -48,48 +53,12 @@ export default function Chapter() {
           </Title>
           <div className='flex flex-grow flex-col justify-between space-y-4'>
             <div className='flex flex-grow flex-col space-y-4'>
-              <ul className='grid grid-cols-6 gap-2'>
-                {books.map((bookName, index) => {
-                  const currentBookIndex = index
-                  const currentBookNumber = currentBookIndex + 1
-                  const shortBookName = bookName.replace('.', '').slice(0, 3)
-                  return (
-                    <li key={index} className='group'>
-                      {currentBookIndex === bookIndex ? (
-                        <span>{shortBookName}</span>
-                      ) : (
-                        <Link
-                          to={`/books/${currentBookNumber}`}
-                          className='text-cb-pink hover:text-cb-pink/75'
-                        >
-                          {shortBookName}
-                        </Link>
-                      )}
-                    </li>
-                  )
-                })}
-              </ul>
-              <ul className='grid grid-cols-6 gap-2'>
-                {Array.from(
-                  {
-                    length: chapters,
-                  },
-                  (_, i) => i + 1
-                ).map((bookChapter: number) => (
-                  <li key={bookChapter}>
-                    {chapter === bookChapter ? (
-                      <span>{bookChapter}</span>
-                    ) : (
-                      <Link
-                        to={`/books/${book}/${bookChapter}`}
-                        className='text-cb-pink hover:text-cb-pink/75 py-4 group-first:pt-0'
-                      >
-                        {bookChapter}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
+              <BookNav currentBookIndex={currentBookIndex} />
+              <ChapterNav
+                bookNumber={book}
+                chapters={chapters}
+                currentChapter={chapter}
+              />
             </div>
             <BookSearch
               searchRef={searchRef}
