@@ -148,6 +148,14 @@ export async function getNote(id: number) {
   return note
 }
 
+export async function getScriptureNote(id: number) {
+  const scriptureNote = await db.query.scriptureNotes.findFirst({
+    where: (model, { eq }) => eq(model.noteId, id),
+  })
+
+  return scriptureNote
+}
+
 export async function getScriptureNotes(text: string) {
   const user = await auth()
 
@@ -187,6 +195,21 @@ export async function deleteNote(id: number, currentPath = '/') {
   await db
     .delete(notes)
     .where(and(eq(notes.id, id), eq(notes.author, user.userId)))
+  revalidatePath(currentPath)
+}
+
+export async function deleteScriptureNote(id: number, currentPath = '/') {
+  const user = await auth()
+
+  if (!user.userId) throw new Error('unauthorized')
+
+  await db.delete(scriptureNotes).where(and(eq(scriptureNotes.noteId, id)))
+
+  await db
+    .delete(notes)
+    .where(and(eq(notes.id, id), eq(notes.author, user.userId)))
+
+  console.log('deleted', id)
   revalidatePath(currentPath)
 }
 

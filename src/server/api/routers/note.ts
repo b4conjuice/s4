@@ -3,8 +3,10 @@ import { z } from 'zod'
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
 import {
   deleteNote,
+  deleteScriptureNote,
   getNote,
   getNotes,
+  getScriptureNote,
   getScriptureNotes,
   getUniqueNoteTexts,
   saveNote,
@@ -20,6 +22,12 @@ export const noteRouter = createTRPCRouter({
     .query(async ({ input }) => {
       const note = await getNote(input.id)
       return note
+    }),
+  getScriptureNote: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input }) => {
+      const scriptureNote = await getScriptureNote(input.id)
+      return scriptureNote ?? null
     }),
   getScriptureNotes: publicProcedure
     .input(z.object({ text: z.string() }))
@@ -53,5 +61,10 @@ export const noteRouter = createTRPCRouter({
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       await deleteNote(input.id)
+    }),
+  deleteScriptureNote: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      await deleteScriptureNote(input.id)
     }),
 })

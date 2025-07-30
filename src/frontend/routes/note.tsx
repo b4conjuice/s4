@@ -8,6 +8,7 @@ import {
 import { SignedIn, useAuth } from '@clerk/nextjs'
 import {
   ArrowDownOnSquareIcon,
+  BookOpenIcon,
   ChevronLeftIcon,
   Cog6ToothIcon,
   PencilSquareIcon,
@@ -31,6 +32,10 @@ type Tab = (typeof TABS)[number]
 export default function Note() {
   const { id } = useParams()
   const { data: note } = api.note.get.useQuery({ id: Number(id) })
+  const { data: scriptureNote } = api.note.getScriptureNote.useQuery({
+    id: Number(id),
+  })
+  const isScriptureNote = !!scriptureNote
   const utils = api.useUtils()
   const { mutate: saveNote } = api.note.save.useMutation({
     onSuccess: async () => {
@@ -60,6 +65,12 @@ export default function Note() {
       await utils.note.getAll.invalidate()
     },
   })
+  const { mutate: deleteScriptureNote } =
+    api.note.deleteScriptureNote.useMutation({
+      onSuccess: async () => {
+        await utils.note.getAll.invalidate()
+      },
+    })
   const { text: initialText } = note ?? {}
   const navigate = useNavigate()
   const searchRef = useRef<HTMLInputElement | null>(null)
@@ -178,6 +189,14 @@ export default function Note() {
               >
                 <ChevronLeftIcon className='h-6 w-6' />
               </Link>
+              {isScriptureNote && (
+                <Link
+                  to={`/text/${scriptureNote.text}`}
+                  className='text-cb-yellow hover:text-cb-yellow/75'
+                >
+                  <BookOpenIcon className='h-6 w-6' />
+                </Link>
+              )}
             </div>
             <div className='flex space-x-4'>
               <button
@@ -233,9 +252,13 @@ export default function Note() {
           <Button
             onClick={async () => {
               if (note) {
-                const id = note.id ?? undefined
-                if (id) {
-                  deleteNote({ id: Number(id) })
+                const id = Number(note.id) ?? undefined
+                if (id !== undefined) {
+                  if (isScriptureNote) {
+                    deleteScriptureNote({ id })
+                  } else {
+                    deleteNote({ id })
+                  }
                 }
                 setIsConfirmModalOpen(false)
                 await navigate('/notes')
