@@ -77,15 +77,15 @@ const normalizedBookNames = books.map(normalizeBookName)
 const bookIndex = (bookName: string) =>
   books.findIndex(b => b === bookName.replace(' ', ' ')) + 1
 
-function getBookLink(bibleText: string) {
+export function getScriptureUrl(bibleText: string) {
   // TODO: rename to getTextUrl
   return `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&pub=nwtsty&bible=${bibleText}`
 }
 
 function openBookLink(scripture: Scripture) {
   const text = transformScripturetoText(scripture)
-  const chapterLink = getBookLink(text)
-  window.open(chapterLink)
+  const scriptureUrl = getScriptureUrl(text)
+  window.open(scriptureUrl)
 }
 
 function findBookIndex(bookName: string) {
@@ -187,7 +187,6 @@ export default books
 export {
   bookIndex,
   booksAndChaptersMap,
-  getBookLink,
   openBookLink,
   transformScripturetoText,
   transformTextToScripture,

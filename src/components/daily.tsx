@@ -15,7 +15,7 @@ import { toast } from 'react-toastify'
 
 import books, {
   booksAndChaptersMap,
-  getBookLink,
+  getScriptureUrl,
   transformScripturetoText,
   transformTextToScripture,
 } from '@/lib/books'
@@ -167,7 +167,7 @@ function DTChapterButton({
   const dailyTextScripture = data.scripture
   const text = transformScripturetoText(dailyTextScripture)
   const scripture = transformTextToScripture(text)
-  const url = getBookLink(text)
+  const url = getScriptureUrl(text)
   const bookAndChapter = scripture ? scripture.asString : ''
   const lastRead = streakInfo?.lastRead ?? null
   const today = format(new Date(), 'yyyy-MM-dd')
@@ -250,7 +250,7 @@ function SequenceButton({
   const [bookNumber, chapter] = (readToday ? prevSequence : sequence).split(':')
   const text = `${bookNumber}${(chapter ?? '').padStart(3, '0')}001`
   const bookAndChapter = `${books[Number(bookNumber) - 1]} ${chapter}`
-  const url = getBookLink(text)
+  const url = getScriptureUrl(text)
   return (
     <a
       className='bg-cb-dark-blue group w-full cursor-pointer rounded-lg border-none text-center text-lg'

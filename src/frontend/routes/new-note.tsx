@@ -13,7 +13,7 @@ import {
 } from '@/server/db/notes'
 import BookSearch from '@/components/book-search'
 import {
-  getBookLink,
+  getScriptureUrl,
   transformScripturetoText,
   transformTextToScripture,
 } from '@/lib/books'
@@ -71,7 +71,7 @@ export default function NewNote({ noteType }: { noteType?: string }) {
               //   bookLinkType === 'jw' // TODO: add bookLinkType
               //     ? getBookLink(scriptureText)
               //     : getBookLink2(scripture) // TODO: add getBookLink2
-              const scriptureLink = getBookLink(scriptureText)
+              const scriptureUrl = getScriptureUrl(scriptureText)
 
               const scriptureAsString =
                 scripture.asString ??
@@ -95,7 +95,7 @@ export default function NewNote({ noteType }: { noteType?: string }) {
 
               setText(newText)
 
-              window.open(scriptureLink)
+              window.open(scriptureUrl)
             }}
             showRecentCommands
           />

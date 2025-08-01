@@ -4,7 +4,7 @@ import { PencilSquareIcon } from '@heroicons/react/20/solid'
 import { Main, Title } from '@/components/ui'
 import {
   booksAndChaptersMap,
-  getBookLink,
+  getScriptureUrl,
   transformTextToScripture,
 } from '@/lib/books'
 import { api } from '@/trpc/react'
@@ -29,7 +29,7 @@ export default function Text() {
   const { data: notes, isFetching } = api.note.getScriptureNotes.useQuery({
     text,
   })
-  const bookLink = getBookLink(text)
+  const scriptureUrl = getScriptureUrl(text)
   const chapters = booksAndChaptersMap[scripture.bookName] ?? 1
   return (
     <>
@@ -38,7 +38,7 @@ export default function Text() {
           <Title>
             <a
               className='text-cb-pink hover:text-cb-pink/75 hover:cursor-pointer'
-              href={bookLink}
+              href={scriptureUrl}
               target='_blank'
             >
               {scripture.asString}

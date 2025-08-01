@@ -1,6 +1,6 @@
 import useLocalStorage from '@/lib/useLocalStorage'
 import type { HistoryEntry, Scripture } from '@/lib/types'
-import { getBookLink, transformScripturetoText } from './books'
+import { getScriptureUrl, transformScripturetoText } from '@/lib/books'
 
 export default function useHistory() {
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>(
@@ -9,7 +9,7 @@ export default function useHistory() {
   )
   function addHistory(scripture: Scripture) {
     const text = scripture.text ?? transformScripturetoText(scripture)
-    const url = getBookLink(text)
+    const url = getScriptureUrl(text)
     const entry = {
       scripture: {
         ...scripture,

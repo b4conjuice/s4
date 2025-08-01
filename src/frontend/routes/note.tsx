@@ -17,7 +17,7 @@ import {
 import { useDebounce } from '@uidotdev/usehooks'
 
 import BookSearch from '@/components/book-search'
-import { getBookLink, transformScripturetoText } from '@/lib/books'
+import { getScriptureUrl, transformScripturetoText } from '@/lib/books'
 import Textarea from '@/components/textarea'
 import useTextarea from '@/lib/useTextarea'
 import { api } from '@/trpc/react'
@@ -153,7 +153,7 @@ export default function Note() {
               //   bookLinkType === 'jw' // TODO: add bookLinkType
               //     ? getBookLink(scriptureText)
               //     : getBookLink2(scripture) // TODO: add getBookLink2
-              const scriptureLink = getBookLink(scriptureText)
+              const scriptureUrl = getScriptureUrl(scriptureText)
 
               const scriptureAsString =
                 scripture.asString ??
@@ -177,7 +177,7 @@ export default function Note() {
 
               setText(newText)
 
-              window.open(scriptureLink)
+              window.open(scriptureUrl)
             }}
             showRecentCommands
           />

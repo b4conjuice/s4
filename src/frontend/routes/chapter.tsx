@@ -5,7 +5,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Main, Title } from '@/components/ui'
 import books, {
   booksAndChaptersMap,
-  getBookLink,
+  getScriptureUrl,
   transformScripturetoText,
 } from '@/lib/books'
 import Menu from '@/components/menu'
@@ -38,7 +38,7 @@ export default function Chapter() {
     bookName,
     chapter,
   })
-  const bookLink = getBookLink(text)
+  const scriptureUrl = getScriptureUrl(text)
   return (
     <>
       <Main className='flex flex-col p-4'>
@@ -48,7 +48,7 @@ export default function Chapter() {
               type='button'
               onClick={() => {
                 // TODO: change to link
-                window.open(bookLink)
+                window.open(scriptureUrl)
               }}
               className='text-cb-pink hover:text-cb-pink/75 hover:cursor-pointer'
             >

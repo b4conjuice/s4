@@ -9,7 +9,7 @@ import { Main, Title } from '@/components/ui'
 import BookSearch from '@/components/book-search'
 import { api } from '@/trpc/react'
 import {
-  getBookLink,
+  getScriptureUrl,
   transformScripturetoText,
   transformTextToScripture,
 } from '@/lib/books'
@@ -33,9 +33,9 @@ export default function Home() {
         id: 'dailyText',
         title: `DT: ${dailyText}`,
         action: () => {
-          const bookLink = getBookLink(text)
+          const scriptureUrl = getScriptureUrl(text)
           addHistory(scripture)
-          window.open(bookLink)
+          window.open(scriptureUrl)
         },
         bookName: scripture.bookName,
       })
@@ -56,8 +56,8 @@ export default function Home() {
               defaultCommands={defaultCommands}
               onSelectBook={scripture => {
                 const text = transformScripturetoText(scripture)
-                const chapterLink = getBookLink(text)
-                window.open(chapterLink)
+                const scriptureUrl = getScriptureUrl(text)
+                window.open(scriptureUrl)
               }}
             />
           </div>
