@@ -13,6 +13,8 @@ export type Scripture = {
   asString?: string
 }
 
+export type ScriptureUrl = 'jwlibrary' | 'jworg' | 'wol'
+
 export type Note = {
   id?: number
   text: string

@@ -9,6 +9,7 @@ import {
 
 const nav = [
   { text: 'home', href: '/' },
+  { text: 'settings', href: '/settings' },
   { text: 'history', href: '/history' },
   { text: 'books', href: '/books' },
   { text: 'notes', href: '/notes' },

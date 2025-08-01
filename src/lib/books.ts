@@ -1,4 +1,4 @@
-import type { Scripture } from '@/lib/types'
+import type { Scripture, ScriptureUrl } from '@/lib/types'
 
 const booksAndChaptersMap: Record<string, number> = {
   'Gen.': 50,
@@ -77,9 +77,24 @@ const normalizedBookNames = books.map(normalizeBookName)
 const bookIndex = (bookName: string) =>
   books.findIndex(b => b === bookName.replace(' ', ' ')) + 1
 
-export function getScriptureUrl(bibleText: string) {
-  // TODO: rename to getTextUrl
-  return `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&pub=nwtsty&bible=${bibleText}`
+export function getScriptureUrl(
+  bibleText: string,
+  scriptureUrl: ScriptureUrl = 'jwlibrary'
+) {
+  const scripture = transformTextToScripture(bibleText)
+  const { bookNumber, chapter, verse } = scripture as Scripture
+  const wolBibleText = `${bookNumber}/${chapter}/${verse ?? 1}`
+
+  switch (scriptureUrl) {
+    case 'jwlibrary':
+      return `jwlibrary://view/finder?srcid=jwlshare&wtlocale=E&prefer=lang&pub=nwtsty&bible=${bibleText}`
+    case 'jworg':
+      return `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&pub=nwtsty&bible=${bibleText}`
+    case 'wol':
+      return `https://wol.jw.org/en/wol/b/r1/lp-e/nwtsty/${wolBibleText}`
+    default:
+      return `jwlibrary://view/finder?srcid=jwlshare&wtlocale=E&prefer=lang&pub=nwtsty&bible=${bibleText}`
+  }
 }
 
 function openBookLink(scripture: Scripture) {

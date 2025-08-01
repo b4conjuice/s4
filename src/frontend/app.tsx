@@ -10,6 +10,7 @@ import NotePage from '@/frontend/routes/note'
 import BooksPage from '@/frontend/routes/books'
 import BookPage from '@/frontend/routes/book'
 import ChapterPage from '@/frontend/routes/chapter'
+import SettingsPage from '@/frontend/routes/settings'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Routes>
           <Route path='/' element={<HomePage />} />
           <Route path='/history' element={<HistoryPage />} />
+          <Route path='/settings' element={<SettingsPage />} />
           <Route path='/books' element={<BooksPage />} />
           <Route path='/books/:book' element={<BookPage />} />
           <Route path='/books/:book/:chapter' element={<ChapterPage />} />
