@@ -29,6 +29,7 @@ export default function Books() {
                   await navigate(`/books/${bookNumber}/${chapter}`)
                 }
               }}
+              showRecentCommands
             />
           </div>
         </div>

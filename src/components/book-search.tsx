@@ -163,6 +163,9 @@ function CommandPalette({
   )
 }
 
+const RECENT_COMMANDS_COUNT = 25
+const UNIQUE_RECENT_COMMANDS_COUNT = 10
+
 export default function BookSearch({
   searchRef,
   showRecentCommands,
@@ -232,13 +235,13 @@ export default function BookSearch({
   }
 
   const recentCommands =
-    history?.slice(0, 10).map(({ scripture, url }) => ({
-      // get 10 most recent
+    history?.slice(0, RECENT_COMMANDS_COUNT).map(({ scripture }) => ({
       id: `go-${scripture.text}`,
       title: `${scripture.asString}`,
       action: () => {
-        addHistory(scripture)
-        window.open(url)
+        if (onSelectBook) {
+          onSelectBook(scripture)
+        }
       },
       bookName: scripture.bookName,
     })) ?? []
@@ -260,7 +263,10 @@ export default function BookSearch({
         commands={commands}
         defaultCommands={
           showRecentCommands
-            ? [...defaultCommands, ...uniqueRecentCommands.slice(0, 3)] // show 3 unique most recent
+            ? [
+                ...defaultCommands,
+                ...uniqueRecentCommands.slice(0, UNIQUE_RECENT_COMMANDS_COUNT),
+              ]
             : [...defaultCommands]
         }
         placeholder='search books'
