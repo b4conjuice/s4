@@ -3,6 +3,7 @@ import { NavLink as Link } from 'react-router'
 import {
   AdjustmentsHorizontalIcon,
   ArrowTopRightOnSquareIcon,
+  ArrowUpTrayIcon,
   BookOpenIcon,
   ListBulletIcon,
   Squares2X2Icon,
@@ -18,7 +19,8 @@ import {
   Label,
 } from '@headlessui/react'
 import { format } from 'date-fns'
-import { useLocalStorage } from '@uidotdev/usehooks'
+import { useCopyToClipboard } from '@uidotdev/usehooks'
+import { toast } from 'react-toastify'
 
 import { Main, Title } from '@/components/ui'
 import Modal from '@/components/modal'
@@ -26,6 +28,8 @@ import Button from '@/components/ui/button'
 import books, { booksAndChaptersMap } from '@/lib/books'
 import useHistory from '@/lib/useHistory'
 import Menu from '@/components/menu'
+import useLocalStorage from '@/lib/useLocalStorage'
+import type { HistoryEntry } from '@/lib/types'
 
 type View = 'list' | 'book-chapter'
 const defaultView: View = 'list'
@@ -39,27 +43,40 @@ const filters: { id: Filter; text: string }[] = [
 ]
 
 export default function History() {
+  const [importText, setImportText] = useState('')
+  const [copiedText, copyToClipboard] = useCopyToClipboard()
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
   const [view, setView] = useLocalStorage<View>('s4-history-view', defaultView)
   const [filter, setFilter] = useLocalStorage<Filter>(
     's4-history-filter',
     defaultFilter
   )
-  const { history, clearHistory } = useHistory()
+  const { history, clearHistory, setHistory } = useHistory()
   return (
     <>
       <Main className='flex flex-col p-4'>
         <div className='flex flex-grow flex-col space-y-4'>
           <div className='flex items-center justify-between'>
-            <Title>history</Title>
+            <div className='flex items-center space-x-4'>
+              <Title>history</Title>
+              <button
+                className='text-red-700 hover:text-red-700/75'
+                type='button'
+                onClick={() => {
+                  setIsConfirmModalOpen(true)
+                }}
+              >
+                <TrashIcon className='h-6 w-6' />
+              </button>
+            </div>
             <button
-              className='text-red-700 hover:text-red-700/75'
               type='button'
               onClick={() => {
-                setIsConfirmModalOpen(true)
+                setIsExportModalOpen(true)
               }}
             >
-              <TrashIcon className='h-6 w-6' />
+              <ArrowUpTrayIcon className='h-6 w-6' />
             </button>
           </div>
           <div className='flex flex-grow flex-col justify-between space-y-4'>
@@ -250,6 +267,40 @@ export default function History() {
             no
           </Button>
         </div>
+      </Modal>
+      <Modal
+        isOpen={isExportModalOpen}
+        setIsOpen={setIsExportModalOpen}
+        title='import/export history'
+      >
+        <Button
+          onClick={async () => {
+            await copyToClipboard(btoa(JSON.stringify(history)))
+            toast.success('copied export code to clipboard')
+          }}
+        >
+          export
+        </Button>
+        <hr className='border-cb-white/25' />
+        <textarea
+          className='bg-cobalt w-full p-4'
+          value={importText}
+          onChange={e => {
+            setImportText(e.target.value)
+          }}
+        />
+        <Button
+          onClick={() => {
+            const newHistory = JSON.parse(atob(importText)) as HistoryEntry[]
+            setHistory(newHistory)
+            toast.success('updated history')
+            setImportText('')
+          }}
+          disabled={!importText}
+          className='disabled:pointer-events-none disabled:opacity-25'
+        >
+          import
+        </Button>
       </Modal>
     </>
   )

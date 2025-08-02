@@ -24,5 +24,5 @@ export default function useHistory() {
   function clearHistory() {
     setHistory([])
   }
-  return { history, clearHistory, addHistory }
+  return { history, clearHistory, addHistory, setHistory }
 }
