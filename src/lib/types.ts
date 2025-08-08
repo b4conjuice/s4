@@ -24,3 +24,7 @@ export type Note = {
   list: string[]
   tags: string[]
 }
+
+export type ScriptureNote = {
+  scripture: string
+} & Note

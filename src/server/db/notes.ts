@@ -4,9 +4,9 @@ import 'server-only'
 
 import { revalidatePath } from 'next/cache'
 import { auth } from '@clerk/nextjs/server'
-import { and, eq, inArray, like, sql } from 'drizzle-orm'
+import { and, eq, getTableColumns, inArray, like, sql } from 'drizzle-orm'
 
-import { type Note } from '@/lib/types'
+import { type Note, type ScriptureNote } from '@/lib/types'
 import { db } from '@/server/db'
 import { notes, scriptureNotes } from '@/server/db/schema'
 
@@ -163,17 +163,18 @@ export async function getAllScriptureNotes({ random }: { random?: boolean }) {
 
   const sNotes = await db.query.scriptureNotes.findMany()
   const scriptureNoteIds = sNotes.map(note => note.noteId)
-  const foundNotes = await (random
-    ? db
-        .select()
-        .from(notes)
-        .where(inArray(notes.id, scriptureNoteIds))
-        .orderBy(sql`RANDOM()`)
-    : db.select().from(notes).where(inArray(notes.id, scriptureNoteIds)))
-  return foundNotes.map(note => ({
-    ...note,
-    scripture: sNotes.find(sNote => sNote.noteId === note.id)?.text,
-  }))
+  const query = db
+    .select({
+      ...getTableColumns(notes),
+      scripture: scriptureNotes.text,
+    })
+    .from(notes)
+    .innerJoin(scriptureNotes, eq(notes.id, scriptureNotes.noteId))
+    .where(inArray(notes.id, scriptureNoteIds))
+  const foundNotes: ScriptureNote[] = await (random
+    ? query.orderBy(sql`RANDOM()`)
+    : query)
+  return foundNotes
 }
 
 export async function getScriptureNotes(text: string) {

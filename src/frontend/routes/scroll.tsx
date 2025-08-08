@@ -10,6 +10,7 @@ import Menu from '@/components/menu'
 import { Main } from '@/components/ui'
 import { api } from '@/trpc/react'
 import TopNav from '@/components/top-nav'
+import { getScriptureUrl, transformTextToScripture } from '@/lib/books'
 
 function Notes() {
   const {
@@ -47,32 +48,51 @@ function Notes() {
     <>
       <Main className='flex flex-col'>
         <ul className='h-screen snap-y snap-mandatory overflow-auto'>
-          {notes?.map(note => (
-            <li
-              key={note.id}
-              className='group relative h-screen w-full snap-start'
-            >
-              <textarea
-                className='group-odd:border-cobalt group-odd:bg-cobalt group-even:bg-cb-dark-blue group-even:border-cb-dark-blue caret-cb-yellow h-full w-full flex-grow overflow-hidden'
-                defaultValue={note.text}
-                readOnly
-              />
-              <footer className='sticky bottom-16 flex justify-end space-x-4 px-2'>
-                <Link
-                  to={`/text/${note.scripture}`}
-                  className='text-cb-yellow hover:text-cb-yellow/75'
-                >
-                  <BookOpenIcon className='h-6 w-6' />
-                </Link>
-                <Link
-                  to={`/notes/${note.id}`}
-                  className='text-cb-yellow hover:text-cb-yellow/75'
-                >
-                  <PencilSquareIcon className='h-6 w-6' />
-                </Link>
-              </footer>
-            </li>
-          ))}
+          {notes?.map(note => {
+            const scripture = transformTextToScripture(note.scripture)
+            if (!scripture) {
+              return null
+            }
+            const scriptureAsString = scripture.asString
+            const scriptureUrl = getScriptureUrl(note.scripture)
+            return (
+              <li
+                key={note.id}
+                className='group relative h-screen w-full snap-start'
+              >
+                <textarea
+                  className='group-odd:border-cobalt group-odd:bg-cobalt group-even:bg-cb-dark-blue group-even:border-cb-dark-blue caret-cb-yellow h-full w-full flex-grow overflow-hidden'
+                  defaultValue={note.text}
+                  readOnly
+                />
+                <footer className='sticky bottom-16 flex justify-between px-2'>
+                  <div className='flex space-x-4'>
+                    <a
+                      href={scriptureUrl}
+                      target='_blank'
+                      className='text-cb-yellow hover:text-cb-yellow/75'
+                    >
+                      {scriptureAsString}
+                    </a>
+                  </div>
+                  <div className='flex space-x-4'>
+                    <Link
+                      to={`/text/${note.scripture}`}
+                      className='text-cb-yellow hover:text-cb-yellow/75'
+                    >
+                      <BookOpenIcon className='h-6 w-6' />
+                    </Link>
+                    <Link
+                      to={`/notes/${note.id}`}
+                      className='text-cb-yellow hover:text-cb-yellow/75'
+                    >
+                      <PencilSquareIcon className='h-6 w-6' />
+                    </Link>
+                  </div>
+                </footer>
+              </li>
+            )
+          })}
         </ul>
       </Main>
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
