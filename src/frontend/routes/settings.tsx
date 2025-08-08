@@ -59,6 +59,7 @@ export default function SettingsPage() {
                   const scriptureUrl = getScriptureUrl(text, scriptureUrlType)
                   window.open(scriptureUrl)
                 }}
+                disableAddToHistory
               />
             </div>
           </div>
