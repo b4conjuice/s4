@@ -178,12 +178,14 @@ export default function BookSearch({
   defaultCommands = [],
   onSelectBook = openScriptureUrl,
   initialQuery,
+  disableAddToHistory,
 }: {
   searchRef?: React.RefObject<HTMLInputElement | null>
   showRecentCommands?: boolean
   defaultCommands?: Command[]
   onSelectBook?: (scripture: Scripture) => void
   initialQuery?: string
+  disableAddToHistory?: boolean
 }) {
   const internalSearchRef = useRef<HTMLInputElement | null>(null)
   const searchRef = initialSearchRef ?? internalSearchRef
@@ -210,7 +212,9 @@ export default function BookSearch({
           id: `go-${text}`,
           title: `${bookName} ${bookChapter}`,
           action: async () => {
-            addHistory(scripture)
+            if (!disableAddToHistory) {
+              addHistory(scripture)
+            }
             if (onSelectBook) {
               onSelectBook(scripture)
             }
@@ -234,7 +238,9 @@ export default function BookSearch({
       id: `custom-go-${text}`,
       title: scripture.asString ?? '',
       action: async () => {
-        addHistory(scripture)
+        if (!disableAddToHistory) {
+          addHistory(scripture)
+        }
         if (onSelectBook) {
           onSelectBook(scripture)
         }
