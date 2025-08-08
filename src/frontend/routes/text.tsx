@@ -56,12 +56,7 @@ export default function Text() {
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-4'>
           <Menu />
-          <BookMenu
-            currentBookIndex={scripture.bookNumber - 1}
-            bookNumber={String(scripture.bookNumber)}
-            chapters={chapters}
-            currentChapter={Number(scripture.chapter)}
-          />
+          <BookMenu />
         </div>
         <div className='flex space-x-4'>
           <Link
