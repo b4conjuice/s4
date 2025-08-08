@@ -48,6 +48,7 @@ export default function Book() {
                   await navigate(`/books/${bookNumber}/${chapter}`)
                 }
               }}
+              initialQuery={`${bookName} `}
             />
           </div>
         </div>
