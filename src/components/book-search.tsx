@@ -34,14 +34,19 @@ function CommandPalette({
   placeholder = 'search commands',
   ref,
   createCustomCommand,
+  initialQuery,
 }: {
   commands: Command[]
   defaultCommands: Command[]
   placeholder?: string
   ref: React.RefObject<HTMLInputElement | null>
   createCustomCommand?: (query: string) => Command | null
+  initialQuery?: string
 }) {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(initialQuery ?? '')
+  useEffect(() => {
+    setQuery(initialQuery ?? '')
+  }, [initialQuery])
 
   // TODO: add option to disable this
   useEffect(() => {
@@ -172,11 +177,13 @@ export default function BookSearch({
   showRecentCommands,
   defaultCommands = [],
   onSelectBook = openScriptureUrl,
+  initialQuery,
 }: {
   searchRef?: React.RefObject<HTMLInputElement | null>
   showRecentCommands?: boolean
   defaultCommands?: Command[]
   onSelectBook?: (scripture: Scripture) => void
+  initialQuery?: string
 }) {
   const internalSearchRef = useRef<HTMLInputElement | null>(null)
   const searchRef = initialSearchRef ?? internalSearchRef
@@ -275,6 +282,7 @@ export default function BookSearch({
         placeholder='search books'
         ref={searchRef}
         createCustomCommand={createCustomCommand}
+        initialQuery={initialQuery}
       />
     </>
   )
