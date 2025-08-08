@@ -6,6 +6,7 @@ import Menu from '@/components/menu'
 import type { ScriptureUrl } from '@/lib/types'
 import { getScriptureUrl, transformScripturetoText } from '@/lib/books'
 import Button from '@/components/ui/button'
+import BookSearch from '@/components/book-search'
 
 const scriptureUrlTypes = [
   { id: 'jwlibrary', text: 'jwlibrary' },
@@ -52,6 +53,13 @@ export default function SettingsPage() {
               >
                 Gen 1:1
               </Button>
+              <BookSearch
+                onSelectBook={scripture => {
+                  const text = transformScripturetoText(scripture)
+                  const scriptureUrl = getScriptureUrl(text, scriptureUrlType)
+                  window.open(scriptureUrl)
+                }}
+              />
             </div>
           </div>
         </div>
