@@ -1,21 +1,27 @@
 import { useEffect, useRef, useState } from 'react'
-import { NavLink as Link } from 'react-router'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation' // TODO: use react-router
+import {
+  NavLink as Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router'
 import classNames from 'classnames'
 import { TagIcon } from '@heroicons/react/24/solid'
 
 import { type Note } from '@/lib/types'
 import useLocalStorage from '@/lib/useLocalStorage'
 import CommandPalette from '@/components/command-palette'
+import useSearch from '@/lib/useSearch'
 
 export default function NoteList({ notes }: { notes: Note[] }) {
   const [isSetTagsModalOpen, setIsSetTagsModalOpen] = useState(false)
   const [isAddNewTagModalOpen, setIsAddNewTagModalOpen] = useState(false)
   const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null)
   const selectedNote = notes.find(note => note.id === selectedNoteId)
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const pathname = location.pathname
+  const [searchParams] = useSearchParams()
   const query = searchParams.get('q')
 
   const [selectedTags, setSelectedTags] = useLocalStorage<string[]>(
@@ -39,39 +45,39 @@ export default function NoteList({ notes }: { notes: Note[] }) {
       ? selectedTags.every(tag => note.tags?.includes(tag))
       : true
   )
-  const results = taggedNotes
-  // const { search, setSearch, results, searchRef } = useSearch({
-  //   initialSearch: query ? String(query) : '',
-  //   list: taggedNotes || [],
-  //   options: {
-  //     keys: ['title', 'body'],
-  //   },
-  // })
-  // useEffect(() => {
-  //   if (query) {
-  //     setSearch(String(query))
-  //   }
-  // }, [query, setSearch])
+
+  const { search, setSearch, results, searchRef } = useSearch({
+    initialSearch: query ? String(query) : '',
+    list: taggedNotes || [],
+    options: {
+      keys: ['title', 'body'],
+    },
+  })
+  useEffect(() => {
+    if (query) {
+      setSearch(String(query))
+    }
+  }, [query, setSearch])
 
   const firstTagButtonRef = useRef<HTMLButtonElement | null>(null)
   return (
     <>
-      {/* <div className='flex'>
+      <div className='flex'>
         <input
           ref={searchRef}
           type='text'
-          className='w-full bg-cb-blue disabled:pointer-events-none disabled:opacity-25'
+          className='bg-cb-blue w-full disabled:pointer-events-none disabled:opacity-25'
           placeholder='search'
           value={search}
           onChange={e => {
             const { value } = e.target
             setSearch(value)
             const url = `${pathname}${value ? `?q=${value}` : ''}`
-            router.push(url)
+            void navigate(url)
           }}
           disabled={!(notes?.length && notes?.length > 0)}
         />
-      </div> */}
+      </div>
       {allTags.length > 0 && (
         <ul className='flex space-x-2 overflow-x-auto'>
           {allTags.map((tag, index) => (

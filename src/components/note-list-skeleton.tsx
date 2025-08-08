@@ -15,14 +15,13 @@ export default function NoteListSkeleton() {
   )
   return (
     <>
-      {/* TODO: add back after adding to note-list */}
-      {/* <div className='flex'>
+      <div className='flex'>
         <input
           type='text'
           className='bg-cb-blue w-full disabled:pointer-events-none disabled:opacity-25'
           placeholder='search'
         />
-      </div> */}
+      </div>
       <ul className='flex space-x-2 overflow-x-auto'>
         {allTags.map((tag, index) => (
           <li key={index}>
