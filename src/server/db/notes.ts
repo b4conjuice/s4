@@ -4,7 +4,7 @@ import 'server-only'
 
 import { revalidatePath } from 'next/cache'
 import { auth } from '@clerk/nextjs/server'
-import { and, eq, inArray, like } from 'drizzle-orm'
+import { and, eq, inArray, like, sql } from 'drizzle-orm'
 
 import { type Note } from '@/lib/types'
 import { db } from '@/server/db'
@@ -156,6 +156,26 @@ export async function getScriptureNote(id: number) {
   return scriptureNote
 }
 
+export async function getAllScriptureNotes({ random }: { random?: boolean }) {
+  const user = await auth()
+
+  if (!user.userId) throw new Error('unauthorized')
+
+  const sNotes = await db.query.scriptureNotes.findMany()
+  const scriptureNoteIds = sNotes.map(note => note.noteId)
+  const foundNotes = await (random
+    ? db
+        .select()
+        .from(notes)
+        .where(inArray(notes.id, scriptureNoteIds))
+        .orderBy(sql`RANDOM()`)
+    : db.select().from(notes).where(inArray(notes.id, scriptureNoteIds)))
+  return foundNotes.map(note => ({
+    ...note,
+    scripture: sNotes.find(sNote => sNote.noteId === note.id)?.text,
+  }))
+}
+
 export async function getScriptureNotes(text: string) {
   const user = await auth()
 
@@ -165,7 +185,7 @@ export async function getScriptureNotes(text: string) {
     where: (model, { eq }) => eq(model.text, text),
   })
   const scriptureNoteIds = scriptureNotes.map(note => note.noteId)
-  const foundNotes = db
+  const foundNotes = await db
     .select()
     .from(notes)
     .where(inArray(notes.id, scriptureNoteIds))

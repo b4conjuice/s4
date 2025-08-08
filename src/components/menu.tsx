@@ -14,6 +14,7 @@ const nav = [
   { text: 'books', href: '/books' },
   { text: 'notes', href: '/notes' },
   { text: 'new note', href: '/notes/new' },
+  { text: 'scroll', href: '/text/scroll' },
 ]
 
 export default function Menu() {

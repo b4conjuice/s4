@@ -11,6 +11,7 @@ import BooksPage from '@/frontend/routes/books'
 import BookPage from '@/frontend/routes/book'
 import ChapterPage from '@/frontend/routes/chapter'
 import SettingsPage from '@/frontend/routes/settings'
+import ScrollPage from '@/frontend/routes/scroll'
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
             element={<NewNotePage noteType='scripture' />}
           />
           <Route path='/text/:text/:id' element={<NotePage />} />
+          <Route path='/text/scroll' element={<ScrollPage />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer

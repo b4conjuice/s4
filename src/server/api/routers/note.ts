@@ -4,6 +4,7 @@ import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
 import {
   deleteNote,
   deleteScriptureNote,
+  getAllScriptureNotes,
   getNote,
   getNotes,
   getScriptureNote,
@@ -28,6 +29,12 @@ export const noteRouter = createTRPCRouter({
     .query(async ({ input }) => {
       const scriptureNote = await getScriptureNote(input.id)
       return scriptureNote ?? null
+    }),
+  getAllScriptureNotes: publicProcedure
+    .input(z.object({ random: z.boolean().optional() }))
+    .query(async ({ input }) => {
+      const notes = await getAllScriptureNotes({ random: input.random })
+      return notes
     }),
   getScriptureNotes: publicProcedure
     .input(z.object({ text: z.string() }))
