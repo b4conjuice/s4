@@ -1,4 +1,4 @@
-import { Link } from 'react-router'
+import { NavLink as Link, useParams } from 'react-router'
 
 export default function ChapterNav({
   bookNumber,
@@ -9,6 +9,7 @@ export default function ChapterNav({
   chapters: number
   currentChapter?: number
 }) {
+  const { text } = useParams()
   return (
     <ul className='grid grid-cols-6 gap-2'>
       {Array.from(
@@ -20,7 +21,16 @@ export default function ChapterNav({
         return (
           <li key={bookChapter}>
             {bookChapter === currentChapter ? (
-              <span>{bookChapter}</span>
+              text ? (
+                <Link
+                  to={`/books/${bookNumber}/${bookChapter}`}
+                  className='text-cb-light-blue hover:text-cb-light-blue/75 py-4 group-first:pt-0'
+                >
+                  {bookChapter}
+                </Link>
+              ) : (
+                <span>{bookChapter}</span>
+              )
             ) : (
               <Link
                 to={`/books/${bookNumber}/${bookChapter}`}
