@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import {
@@ -12,6 +12,7 @@ import Fuse from 'fuse.js'
 import type { Scripture } from '@/lib/types'
 import books, {
   booksAndChaptersMap,
+  openScriptureUrl,
   transformScripturetoText,
   transformTextToScripture,
 } from '@/lib/books'
@@ -167,16 +168,18 @@ const RECENT_COMMANDS_COUNT = 25
 const UNIQUE_RECENT_COMMANDS_COUNT = 10
 
 export default function BookSearch({
-  searchRef,
+  searchRef: initialSearchRef,
   showRecentCommands,
   defaultCommands = [],
-  onSelectBook,
+  onSelectBook = openScriptureUrl,
 }: {
-  searchRef: React.RefObject<HTMLInputElement | null>
+  searchRef?: React.RefObject<HTMLInputElement | null>
   showRecentCommands?: boolean
   defaultCommands?: Command[]
-  onSelectBook: (scripture: Scripture) => void
+  onSelectBook?: (scripture: Scripture) => void
 }) {
+  const internalSearchRef = useRef<HTMLInputElement | null>(null)
+  const searchRef = initialSearchRef ?? internalSearchRef
   const { history, addHistory } = useHistory()
 
   const commands = books

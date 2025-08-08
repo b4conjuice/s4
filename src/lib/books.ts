@@ -97,7 +97,7 @@ export function getScriptureUrl(
   }
 }
 
-function openBookLink(scripture: Scripture) {
+export function openScriptureUrl(scripture: Scripture) {
   const text = transformScripturetoText(scripture)
   const scriptureUrl = getScriptureUrl(text)
   window.open(scriptureUrl)
@@ -121,6 +121,7 @@ function findBookIndex(bookName: string) {
   return -1
 }
 
+// TODO: refactor when scripture is string to use new function transformScriptureStringtoText
 function transformScripturetoText(scripture: string | Partial<Scripture>) {
   const defaultVerse = '001'
   if (typeof scripture === 'string') {
@@ -202,7 +203,6 @@ export default books
 export {
   bookIndex,
   booksAndChaptersMap,
-  openBookLink,
   transformScripturetoText,
   transformTextToScripture,
 }
