@@ -1,24 +1,16 @@
 import { RadioGroup, Field, Radio, Label } from '@headlessui/react'
-import { useLocalStorage } from '@uidotdev/usehooks'
 
 import { Main, Title } from '@/components/ui'
 import Menu from '@/components/menu'
-import type { ScriptureUrl } from '@/lib/types'
 import { getScriptureUrl, transformScripturetoText } from '@/lib/books'
 import Button from '@/components/ui/button'
 import BookSearch from '@/components/book-search'
-
-const scriptureUrlTypes = [
-  { id: 'jwlibrary', text: 'jwlibrary' },
-  { id: 'jworg', text: 'jworg' },
-  { id: 'wol', text: 'wol' },
-]
+import useScriptureUrlType, {
+  scriptureUrlTypes,
+} from '@/lib/useScriptureUrlType'
 
 export default function SettingsPage() {
-  const [scriptureUrlType, setScriptureUrlType] = useLocalStorage<ScriptureUrl>(
-    's4-scripture-url-type',
-    'jwlibrary'
-  )
+  const { scriptureUrlType, setScriptureUrlType } = useScriptureUrlType()
   return (
     <>
       <Main className='flex flex-col p-4'>
@@ -31,15 +23,18 @@ export default function SettingsPage() {
               aria-label='scriptureUrlType'
               className='flex flex-col space-y-2'
             >
-              {scriptureUrlTypes.map(({ id: s, text }) => (
-                <Field key={s} className='flex items-center gap-2'>
+              {scriptureUrlTypes.map(scriptureUrlType => (
+                <Field
+                  key={scriptureUrlType}
+                  className='flex items-center gap-2'
+                >
                   <Radio
-                    value={s}
+                    value={scriptureUrlType}
                     className='group flex size-5 items-center justify-center rounded-full border bg-white data-checked:bg-blue-400'
                   >
                     <span className='invisible size-2 rounded-full bg-white group-data-checked:visible' />
                   </Radio>
-                  <Label>{text}</Label>
+                  <Label>{scriptureUrlType}</Label>
                 </Field>
               ))}
             </RadioGroup>

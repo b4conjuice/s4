@@ -13,7 +13,8 @@ export type Scripture = {
   asString?: string
 }
 
-export type ScriptureUrl = 'jwlibrary' | 'jworg' | 'wol'
+import { type scriptureUrlTypes } from '@/lib/useScriptureUrlType'
+export type ScriptureUrl = (typeof scriptureUrlTypes)[number]
 
 export type Note = {
   id?: number
