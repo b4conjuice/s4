@@ -9,8 +9,8 @@ import books, {
 } from '@/lib/books'
 import Menu from '@/components/menu'
 import BookSearch from '@/components/book-search'
-import BookNav from '@/components/book-nav'
 import ChapterNav from '@/components/chapter-nav'
+import BookMenu from '@/components/book-menu'
 
 export default function Book() {
   const { book } = useParams()
@@ -34,7 +34,6 @@ export default function Book() {
           <Title>{bookName}</Title>
           <div className='flex flex-grow flex-col justify-between space-y-4'>
             <div className='flex flex-grow flex-col space-y-4'>
-              <BookNav currentBookIndex={currentBookIndex} />
               <ChapterNav bookNumber={book} chapters={chapters} />
             </div>
             <BookSearch
@@ -56,6 +55,7 @@ export default function Book() {
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-4'>
           <Menu />
+          <BookMenu />
         </div>
         <div className='flex space-x-4'>
           <button
