@@ -28,6 +28,9 @@ type DTResponse =
     }
   | undefined
 
+let lastFetchDate: string | null = null
+let cachedDt: DTResponse | null = null
+
 export const swordRouter = createTRPCRouter({
   mwt: publicProcedure
     .input(z.object({ date: z.string() }))
@@ -39,6 +42,21 @@ export const swordRouter = createTRPCRouter({
     .input(z.object({ date: z.string() }))
     .query(async ({ input }) => {
       const data: DTResponse = await requestDailyText(input.date)
+      return data
+    }),
+  dtDaily: publicProcedure
+    .input(z.object({ date: z.string() }))
+    .query(async ({ input }) => {
+      if (lastFetchDate && cachedDt && lastFetchDate === input.date) {
+        console.log(
+          'Serving daily data from server-side cache (same calendar day).'
+        )
+        return cachedDt
+      }
+
+      const data: DTResponse = await requestDailyText(input.date)
+      lastFetchDate = input.date
+      cachedDt = data
       return data
     }),
 })

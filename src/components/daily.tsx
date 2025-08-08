@@ -120,7 +120,7 @@ function DTChapterButton({
 }) {
   const [copiedText, copyToClipboard] = useCopyToClipboard()
   const [showButton, setShowButton] = useState(false)
-  const { data, isLoading } = api.sword.dt.useQuery({
+  const { data, isLoading } = api.sword.dtDaily.useQuery({
     date: format(now, 'yyyy/MM/dd'),
   })
   if (!showButton) {
