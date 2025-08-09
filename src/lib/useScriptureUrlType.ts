@@ -1,4 +1,5 @@
-import useLocalStorage from '@/lib/useLocalStorage'
+import { useLocalStorage } from '@uidotdev/usehooks'
+
 import type { ScriptureUrl } from '@/lib/types'
 
 export const scriptureUrlTypes = ['jwlibrary', 'jworg', 'wol']
