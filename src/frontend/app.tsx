@@ -12,6 +12,7 @@ import BookPage from '@/frontend/routes/book'
 import ChapterPage from '@/frontend/routes/chapter'
 import SettingsPage from '@/frontend/routes/settings'
 import ScrollPage from '@/frontend/routes/scroll'
+import TextSearchPage from '@/frontend/routes/text-search'
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
           <Route path='/notes' element={<NotesPage />} />
           <Route path='/notes/new' element={<NewNotePage />} />
           <Route path='/notes/:id' element={<NotePage />} />
+          <Route path='/text' element={<TextSearchPage />} />
           <Route path='/text/:text' element={<TextPage />} />
           <Route
             path='/text/:text/new'
