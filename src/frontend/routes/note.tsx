@@ -17,7 +17,6 @@ import {
 import { useDebounce } from '@uidotdev/usehooks'
 
 import BookSearch from '@/components/book-search'
-import { getScriptureUrl, transformScripturetoText } from '@/lib/books'
 import Textarea from '@/components/textarea'
 import useTextarea from '@/lib/useTextarea'
 import { api } from '@/trpc/react'

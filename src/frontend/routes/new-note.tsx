@@ -12,11 +12,7 @@ import {
   saveScriptureNote,
 } from '@/server/db/notes'
 import BookSearch from '@/components/book-search'
-import {
-  getScriptureUrl,
-  transformScripturetoText,
-  transformTextToScripture,
-} from '@/lib/books'
+import { transformTextToScripture } from '@/lib/books'
 import useLocalStorage from '@/lib/useLocalStorage'
 import { Main } from '@/components/ui'
 import TopNav from '@/components/top-nav'
