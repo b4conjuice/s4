@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { NavLink as Link, useNavigate, useParams } from 'react-router'
 import { SignedIn, SignedOut } from '@clerk/nextjs'
 import {
   ArrowDownOnSquareIcon,
   ChevronLeftIcon,
 } from '@heroicons/react/20/solid'
+import { useLocalStorage } from '@uidotdev/usehooks'
 
 import {
   saveNote,
@@ -13,19 +14,19 @@ import {
 } from '@/server/db/notes'
 import BookSearch from '@/components/book-search'
 import { transformTextToScripture } from '@/lib/books'
-import useLocalStorage from '@/lib/useLocalStorage'
 import { Main } from '@/components/ui'
 import TopNav from '@/components/top-nav'
 import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
+import useTextarea from '@/lib/useTextarea'
+import Textarea from '@/components/textarea'
 
 export default function NewNote({ noteType }: { noteType?: string }) {
   const { text: scriptureText } = useParams()
   const navigate = useNavigate()
   const searchRef = useRef<HTMLInputElement | null>(null)
-  const textAreaRef = useRef<HTMLTextAreaElement>(null)
   const [text, setText] = useLocalStorage('s4-new-note', '')
-  const [currentSelectionStart, setCurrentSelectionStart] = useState(0)
-  const [currentSelectionEnd, setCurrentSelectionEnd] = useState(0)
+  const textarea = useTextarea({ text, setText })
+  const { insertText } = textarea
 
   const readOnly = false // !user || user.username !== note?.author
   const hasChanges = text !== ''
@@ -42,34 +43,7 @@ export default function NewNote({ noteType }: { noteType?: string }) {
             <p className='px-4'>sign in to save notes</p>
           </SignedOut>
           <div className='flex flex-grow flex-col'>
-            <textarea
-              className='border-cobalt bg-cobalt caret-cb-yellow focus:border-cb-light-blue h-full w-full flex-grow focus:ring-0'
-              value={text}
-              onChange={e => {
-                setText(e.target.value)
-              }}
-              onKeyUp={e => {
-                const target = e.target as HTMLTextAreaElement
-                const selectionStart = Number(target.selectionStart)
-                const selectionEnd = Number(target.selectionEnd)
-                setCurrentSelectionStart(selectionStart)
-                setCurrentSelectionEnd(selectionEnd)
-              }}
-              onFocus={e => {
-                const target = e.target as HTMLTextAreaElement
-                const selectionStart = Number(target.selectionStart)
-                const selectionEnd = Number(target.selectionEnd)
-                setCurrentSelectionStart(selectionStart)
-                setCurrentSelectionEnd(selectionEnd)
-              }}
-              onClick={e => {
-                const target = e.target as HTMLTextAreaElement
-                const selectionStart = Number(target.selectionStart)
-                const selectionEnd = Number(target.selectionEnd)
-                setCurrentSelectionStart(selectionStart)
-                setCurrentSelectionEnd(selectionEnd)
-              }}
-            />
+            <Textarea {...textarea} />
 
             <footer className='bg-cb-dusty-blue sticky bottom-0 flex flex-col space-y-2 px-2 pt-2 pb-6'>
               <BookSearch
@@ -78,20 +52,7 @@ export default function NewNote({ noteType }: { noteType?: string }) {
                   const scriptureAsString =
                     scripture.asString ??
                     `${scripture.bookName} ${scripture.chapter}`
-                  const INSERT = scriptureAsString
-                  const newText =
-                    text.substring(0, currentSelectionStart) +
-                    INSERT +
-                    text.substring(currentSelectionEnd, text.length)
-                  if (textAreaRef.current) {
-                    textAreaRef.current.focus()
-                    textAreaRef.current.value = newText
-                    textAreaRef.current.setSelectionRange(
-                      currentSelectionStart + 1,
-                      currentSelectionStart + 1
-                    )
-                  }
-                  setText(newText)
+                  insertText(scriptureAsString)
 
                   openScriptureUrl(scripture)
                 }}

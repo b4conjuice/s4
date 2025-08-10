@@ -75,13 +75,7 @@ export default function Note() {
   const navigate = useNavigate()
   const searchRef = useRef<HTMLInputElement | null>(null)
   const textarea = useTextarea({ initialText })
-  const {
-    text,
-    setText,
-    currentSelectionStart,
-    currentSelectionEnd,
-    textAreaRef,
-  } = textarea
+  const { text, insertText } = textarea
   const { isSignedIn } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const initialTab = searchParams.get('tab') as Tab
@@ -152,20 +146,7 @@ export default function Note() {
               const scriptureAsString =
                 scripture.asString ??
                 `${scripture.bookName} ${scripture.chapter}`
-              const INSERT = scriptureAsString
-              const newText =
-                text.substring(0, currentSelectionStart) +
-                INSERT +
-                text.substring(currentSelectionEnd, text.length)
-              if (textAreaRef.current) {
-                textAreaRef.current.focus()
-                textAreaRef.current.value = newText
-                textAreaRef.current.setSelectionRange(
-                  currentSelectionStart + 1,
-                  currentSelectionStart + 1
-                )
-              }
-              setText(newText)
+              insertText(scriptureAsString)
 
               openScriptureUrl(scripture)
             }}
