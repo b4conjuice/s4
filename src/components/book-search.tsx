@@ -110,7 +110,7 @@ function CommandPalette({
               />
             </div>
 
-            <ComboboxOptions className='max-h-40 overflow-y-auto py-4 text-sm empty:invisible'>
+            <ComboboxOptions className='max-h-40 overflow-y-auto pt-[1px] text-sm not-empty:pt-0 empty:invisible'>
               {({ option: command }: { option: Command }) => (
                 <ComboboxOption
                   value={command}
