@@ -1,6 +1,12 @@
-import { useRef } from 'react'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { PencilSquareIcon } from '@heroicons/react/20/solid'
 import { format } from 'date-fns'
+import {
+  Menu as MenuRoot,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from '@headlessui/react'
+import { NavLink as Link } from 'react-router'
 
 import Swordle from '@/components/swordle'
 import Mwt from '@/components/mwt'
@@ -17,7 +23,6 @@ import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
 export default function Home() {
   const { addHistory } = useHistory()
   const openScriptureUrl = useOpenScriptureUrl()
-  const searchRef = useRef<HTMLInputElement | null>(null)
   const now = new Date()
   const today = format(now, 'yyyy/MM/dd')
   const { data: dtData } = api.sword.dt.useQuery({ date: today })
@@ -48,10 +53,7 @@ export default function Home() {
             {/* <Swordle /> */}
             {/* <Mwt /> */}
             {/* <Sword /> */}
-            <BookSearch
-              searchRef={searchRef}
-              defaultCommands={defaultCommands}
-            />
+            <BookSearch defaultCommands={defaultCommands} />
           </div>
         </div>
       </Main>
@@ -60,15 +62,29 @@ export default function Home() {
           <Menu />
         </div>
         <div className='flex space-x-4'>
-          <button
-            className='text-cb-yellow hover:text-cb-yellow/75'
-            type='button'
-            onClick={() => {
-              searchRef?.current?.focus()
-            }}
-          >
-            <MagnifyingGlassIcon className='h-6 w-6' />
-          </button>
+          <MenuRoot>
+            <MenuButton className='text-cb-yellow hover:text-cb-yellow/75'>
+              <PencilSquareIcon className='h-6 w-6' />
+            </MenuButton>
+            <MenuItems
+              className='bg-cb-dusty-blue/90 flex flex-col space-y-4 rounded p-4'
+              anchor='bottom end'
+            >
+              <MenuItem>
+                <Link
+                  to='/notes/new'
+                  className='text-cb-pink hover:text-cb-pink/75'
+                >
+                  new note
+                </Link>
+              </MenuItem>
+              <MenuItem>
+                <Link to='/text' className='text-cb-pink hover:text-cb-pink/75'>
+                  new scripture note
+                </Link>
+              </MenuItem>
+            </MenuItems>
+          </MenuRoot>
         </div>
       </footer>
     </>
