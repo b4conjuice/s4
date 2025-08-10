@@ -97,12 +97,6 @@ export function getScriptureUrl(
   }
 }
 
-export function openScriptureUrl(scripture: Scripture) {
-  const text = transformScripturetoText(scripture)
-  const scriptureUrl = getScriptureUrl(text)
-  window.open(scriptureUrl)
-}
-
 function findBookIndex(bookName: string) {
   const normalizedBookName = normalizeBookName(bookName)
   const bookIndexWithNoChanges = normalizedBookNames.indexOf(normalizedBookName)
