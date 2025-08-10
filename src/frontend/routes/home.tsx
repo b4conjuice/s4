@@ -8,17 +8,15 @@ import Sword from '@/components/sword'
 import { Main, Title } from '@/components/ui'
 import BookSearch from '@/components/book-search'
 import { api } from '@/trpc/react'
-import {
-  getScriptureUrl,
-  transformScripturetoText,
-  transformTextToScripture,
-} from '@/lib/books'
+import { transformScripturetoText, transformTextToScripture } from '@/lib/books'
 import useHistory from '@/lib/useHistory'
 import Menu from '@/components/menu'
 import Daily from '@/components/daily'
+import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
 
 export default function Home() {
   const { addHistory } = useHistory()
+  const openScriptureUrl = useOpenScriptureUrl()
   const searchRef = useRef<HTMLInputElement | null>(null)
   const now = new Date()
   const today = format(now, 'yyyy/MM/dd')
@@ -33,9 +31,8 @@ export default function Home() {
         id: 'dailyText',
         title: `DT: ${dailyText}`,
         action: () => {
-          const scriptureUrl = getScriptureUrl(text)
+          openScriptureUrl(scripture)
           addHistory(scripture)
-          window.open(scriptureUrl)
         },
         bookName: scripture.bookName,
       })
