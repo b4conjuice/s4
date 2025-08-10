@@ -169,12 +169,17 @@ export default function BookSearch({
         },
         (_, i) => i + 1
       ).map(bookChapter => {
-        const scripture: Scripture = {
-          bookName: bookName,
-          bookNumber: bookNumber,
+        const partialScripture = {
+          bookName,
+          bookNumber,
           chapter: bookChapter,
+          verse: 1,
         }
-        const text = transformScripturetoText(scripture)
+        const text = transformScripturetoText(partialScripture)
+        const scripture = {
+          ...partialScripture,
+          text,
+        }
         return {
           id: `go-${text}`,
           title: `${bookName} ${bookChapter}`,

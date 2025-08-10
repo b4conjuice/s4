@@ -1,6 +1,9 @@
 import CommandPalette from '@/components/command-palette'
 import Button from '@/components/ui/button'
-import books, { booksAndChaptersMap } from '@/lib/books'
+import books, {
+  booksAndChaptersMap,
+  transformScripturetoText,
+} from '@/lib/books'
 import useLocalStorage from '@/lib/useLocalStorage'
 import copyToClipboard from '@/lib/copyToClipboard'
 import useHistory from '@/lib/useHistory'
@@ -26,10 +29,16 @@ export default function Sword({
 
   const chapterLink = `https://www.jw.org/finder?srcid=jwlshare&wtlocale=E&prefer=lang&bible=${bibleText}&pub=nwtsty`
   const bookWithChapter = `${bookName} ${bookChapter}`
-  const scripture = {
+  const partialScripture = {
     bookName: bookName ?? '',
     bookNumber: Number(bookNumber),
     chapter: Number(bookChapter),
+    verse: 1,
+  }
+  const text = transformScripturetoText(partialScripture)
+  const scripture = {
+    ...partialScripture,
+    text,
   }
   return (
     <div className='flex flex-col space-y-4'>

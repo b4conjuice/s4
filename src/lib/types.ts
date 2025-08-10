@@ -5,11 +5,11 @@ export type HistoryEntry = {
 }
 
 export type Scripture = {
-  text?: string
-  bookName: string // TODO: rename to book for simplicity, but maybe not to distiuguish from bookNumber
+  text: string // TODO: rename to bibleParam
+  bookName: string
   bookNumber: number
   chapter: number
-  verse?: number
+  verse: number
   asString?: string
 }
 
