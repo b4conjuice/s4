@@ -5,7 +5,6 @@ import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Main, Title } from '@/components/ui'
 import books, {
   booksAndChaptersMap,
-  getScriptureUrl,
   transformScripturetoText,
 } from '@/lib/books'
 import Menu from '@/components/menu'
@@ -13,6 +12,7 @@ import BookSearch from '@/components/book-search'
 import ChapterNav from '@/components/chapter-nav'
 import { api } from '@/trpc/react'
 import BookMenu from '@/components/book-menu'
+import useGetScriptureUrl from '@/lib/useGetScriptureUrl'
 
 export default function Chapter() {
   const { book, chapter: chapterParam } = useParams()
@@ -22,6 +22,7 @@ export default function Chapter() {
   const { data: texts, isFetching } = api.note.getUniqueNoteTexts.useQuery({
     bookChapterText,
   })
+  const getScriptureUrl = useGetScriptureUrl()
   if (!book) {
     return <Main className='flex flex-col p-4'>book param is required</Main>
   }
@@ -44,16 +45,13 @@ export default function Chapter() {
       <Main className='flex flex-col p-4'>
         <div className='flex flex-grow flex-col space-y-4'>
           <Title>
-            <button
-              type='button'
-              onClick={() => {
-                // TODO: change to link
-                window.open(scriptureUrl)
-              }}
+            <a
+              href={scriptureUrl}
+              target='_blank'
               className='text-cb-pink hover:text-cb-pink/75 hover:cursor-pointer'
             >
               {bookName} {chapter}
-            </button>
+            </a>
           </Title>
           <div className='flex flex-grow flex-col justify-between space-y-4'>
             <div className='flex flex-grow flex-col space-y-4'>
