@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import classNames from 'classnames'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import {
   Combobox,
@@ -21,7 +20,6 @@ import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
 type Command = {
   id: string
   title: string
-  subtitle?: string
   action: (args?: unknown) => void | Promise<unknown>
   bookName: string
 }
@@ -82,9 +80,6 @@ function CommandPalette({
             void command.action()
           }
         }}
-        onClose={() => {
-          setQuery('')
-        }}
         className='divide-cb-dusty-blue bg-cb-blue ring-cb-blue focus-within:ring-cb-light-blue divide-y overflow-hidden rounded-xl shadow-2xl ring-1'
         virtual={{
           options: filteredCommands,
@@ -117,45 +112,15 @@ function CommandPalette({
 
             <ComboboxOptions className='max-h-40 overflow-y-auto py-4 text-sm empty:invisible'>
               {({ option: command }: { option: Command }) => (
-                <ComboboxOption value={command} className='w-full'>
-                  {({ active }) => (
-                    <div
-                      className={classNames(
-                        'flex items-center space-x-1 px-4 py-2',
-                        active ? 'bg-sword-purple' : ''
-                      )}
-                    >
-                      <div className='flex-grow'>
-                        <span
-                          className={classNames(
-                            'font-medium',
-                            active ? 'text-cb-yellow' : ''
-                          )}
-                        >
-                          {command.title}
-                        </span>
-                        {command.subtitle && (
-                          <span
-                            className={`${
-                              active ? 'text-indigo-200' : 'text-gray-400'
-                            }`}
-                          >
-                            - {command.subtitle}
-                          </span>
-                        )}
-                      </div>
-                      {/* <button
-                        type='button'
-                        className='text-cb-yellow hover:text-cb-yellow/75 hover:cursor-pointer'
-                        onClick={e => {
-                          e.preventDefault()
-                          setQuery(command.title)
-                        }}
-                      >
-                        <ArrowUpLeftIcon className='h-6 w-6' />
-                      </button> */}
+                <ComboboxOption
+                  value={command}
+                  className='data-focus:bg-sword-purple data-focus:text-cb-yellow w-full'
+                >
+                  <div className='flex items-center space-x-1 px-4 py-2'>
+                    <div className='flex-grow'>
+                      <span className='font-medium'>{command.title}</span>
                     </div>
-                  )}
+                  </div>
                 </ComboboxOption>
               )}
             </ComboboxOptions>
