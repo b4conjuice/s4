@@ -25,6 +25,7 @@ import { Main } from '@/components/ui'
 import Modal from '@/components/modal'
 import Button from '@/components/ui/button'
 import type { Note } from '@/lib/types'
+import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
 
 const TABS = ['default', 'settings'] as const
 type Tab = (typeof TABS)[number]
@@ -123,6 +124,7 @@ export default function Note() {
     }
   }, [debouncedText])
 
+  const openScriptureUrl = useOpenScriptureUrl()
   return (
     <>
       <Main className='flex flex-col'>
@@ -148,36 +150,25 @@ export default function Note() {
           <BookSearch
             searchRef={searchRef}
             onSelectBook={scripture => {
-              const scriptureText = transformScripturetoText(scripture)
-              // const chapterLink =
-              //   bookLinkType === 'jw' // TODO: add bookLinkType
-              //     ? getBookLink(scriptureText)
-              //     : getBookLink2(scripture) // TODO: add getBookLink2
-              const scriptureUrl = getScriptureUrl(scriptureText)
-
               const scriptureAsString =
                 scripture.asString ??
                 `${scripture.bookName} ${scripture.chapter}`
-
               const INSERT = scriptureAsString
               const newText =
                 text.substring(0, currentSelectionStart) +
                 INSERT +
                 text.substring(currentSelectionEnd, text.length)
-
               if (textAreaRef.current) {
                 textAreaRef.current.focus()
                 textAreaRef.current.value = newText
-
                 textAreaRef.current.setSelectionRange(
                   currentSelectionStart + 1,
                   currentSelectionStart + 1
                 )
               }
-
               setText(newText)
 
-              window.open(scriptureUrl)
+              openScriptureUrl(scripture)
             }}
             showRecentCommands
           />

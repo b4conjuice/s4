@@ -20,6 +20,7 @@ import {
 import useLocalStorage from '@/lib/useLocalStorage'
 import { Main } from '@/components/ui'
 import TopNav from '@/components/top-nav'
+import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
 
 export default function NewNote({ noteType }: { noteType?: string }) {
   const { text: scriptureText } = useParams()
@@ -33,6 +34,7 @@ export default function NewNote({ noteType }: { noteType?: string }) {
   const readOnly = false // !user || user.username !== note?.author
   const hasChanges = text !== ''
   const canSave = !readOnly && !(!hasChanges || text === '')
+  const openScriptureUrl = useOpenScriptureUrl()
   return (
     <>
       <SignedOut>
@@ -77,12 +79,6 @@ export default function NewNote({ noteType }: { noteType?: string }) {
               <BookSearch
                 searchRef={searchRef}
                 onSelectBook={scripture => {
-                  const scriptureText = transformScripturetoText(scripture)
-                  // const chapterLink =
-                  //   bookLinkType === 'jw' // TODO: add bookLinkType
-                  //     ? getBookLink(scriptureText)
-                  //     : getBookLink2(scripture) // TODO: add getBookLink2
-                  const scriptureUrl = getScriptureUrl(scriptureText)
                   const scriptureAsString =
                     scripture.asString ??
                     `${scripture.bookName} ${scripture.chapter}`
@@ -100,7 +96,8 @@ export default function NewNote({ noteType }: { noteType?: string }) {
                     )
                   }
                   setText(newText)
-                  window.open(scriptureUrl)
+
+                  openScriptureUrl(scripture)
                 }}
                 showRecentCommands
               />
