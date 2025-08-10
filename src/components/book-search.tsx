@@ -79,6 +79,7 @@ function CommandPalette({
           if (command?.action) {
             void command.action()
           }
+          setQuery('')
         }}
         className='divide-cb-dusty-blue bg-cb-blue ring-cb-blue focus-within:ring-cb-light-blue divide-y overflow-hidden rounded-xl shadow-2xl ring-1'
         virtual={{
