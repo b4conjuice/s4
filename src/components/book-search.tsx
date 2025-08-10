@@ -12,11 +12,11 @@ import Fuse from 'fuse.js'
 import type { Scripture } from '@/lib/types'
 import books, {
   booksAndChaptersMap,
-  openScriptureUrl,
   transformScripturetoText,
   transformTextToScripture,
 } from '@/lib/books'
 import useHistory from '@/lib/useHistory'
+import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
 
 type Command = {
   id: string
@@ -176,7 +176,7 @@ export default function BookSearch({
   searchRef: initialSearchRef,
   showRecentCommands,
   defaultCommands = [],
-  onSelectBook = openScriptureUrl,
+  onSelectBook: initialOnSelectBook,
   initialQuery,
   disableAddToHistory,
 }: {
@@ -187,6 +187,8 @@ export default function BookSearch({
   initialQuery?: string
   disableAddToHistory?: boolean
 }) {
+  const openScriptureUrl = useOpenScriptureUrl()
+  const onSelectBook = initialOnSelectBook ?? openScriptureUrl
   const internalSearchRef = useRef<HTMLInputElement | null>(null)
   const searchRef = initialSearchRef ?? internalSearchRef
   const { history, addHistory } = useHistory()
