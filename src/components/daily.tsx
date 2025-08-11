@@ -120,9 +120,17 @@ function DTChapterButton({
 }) {
   const [copiedText, copyToClipboard] = useCopyToClipboard()
   const [showButton, setShowButton] = useState(false)
-  const { data, isLoading } = api.sword.dtDaily.useQuery({
-    date: format(now, 'yyyy/MM/dd'),
-  })
+  const { data, isLoading } = api.sword.dtDaily.useQuery(
+    {
+      date: format(now, 'yyyy/MM/dd'),
+    },
+    {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    }
+  )
   if (!showButton) {
     return (
       <div className='flex gap-4'>
