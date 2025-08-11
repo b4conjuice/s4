@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
 import requestMeetingLinks from '@/lib/requestMeetingLinks'
 import requestDailyText from '@/lib/requestDailyText'
+import { redis } from '@/lib/redis'
 
 type MWTResponse =
   | {
@@ -28,8 +29,8 @@ type DTResponse =
     }
   | undefined
 
-let lastFetchDate: string | null = null
-let cachedDt: DTResponse | null = null
+const LAST_FETCH_TIMESTAMP_KEY = 'dt:last_fetch_timestamp'
+const CACHED_DT_KEY = 'dt:cached_data'
 
 export const swordRouter = createTRPCRouter({
   mwt: publicProcedure
@@ -47,16 +48,17 @@ export const swordRouter = createTRPCRouter({
   dtDaily: publicProcedure
     .input(z.object({ date: z.string() }))
     .query(async ({ input }) => {
+      const lastFetchDate = await redis.get<string>(LAST_FETCH_TIMESTAMP_KEY)
+      const cachedDt = await redis.get<DTResponse>(CACHED_DT_KEY)
       if (lastFetchDate && cachedDt && lastFetchDate === input.date) {
-        console.log(
-          'Serving daily data from server-side cache (same calendar day).'
-        )
+        console.log('serving daily data from redis cache')
         return cachedDt
       }
 
       const data: DTResponse = await requestDailyText(input.date)
-      lastFetchDate = input.date
-      cachedDt = data
+      await redis.set(LAST_FETCH_TIMESTAMP_KEY, input.date)
+      await redis.set(CACHED_DT_KEY, data)
+
       return data
     }),
 })
