@@ -19,8 +19,8 @@ export default function useTextarea({
   const text = externalText ?? interalText
   const setText = externalSetText ?? internalSetText
   useEffect(() => {
-    setText(initialText ?? '')
-  }, [initialText])
+    setText(initialText ?? externalText ?? '')
+  }, [initialText, externalText])
   const [currentSelectionStart, setCurrentSelectionStart] = useState(0)
   const [currentSelectionEnd, setCurrentSelectionEnd] = useState(0)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
