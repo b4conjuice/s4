@@ -13,6 +13,7 @@ import ChapterPage from '@/frontend/routes/chapter'
 import SettingsPage from '@/frontend/routes/settings'
 import ScrollPage from '@/frontend/routes/scroll'
 import TextSearchPage from '@/frontend/routes/text-search'
+import MWPage from '@/frontend/routes/mw'
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
           />
           <Route path='/text/:text/:id' element={<NotePage />} />
           <Route path='/text/scroll' element={<ScrollPage />} />
+          <Route path='/mw' element={<MWPage />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer

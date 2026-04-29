@@ -83,6 +83,16 @@ export default function Home() {
                   new scripture note
                 </Link>
               </MenuItem>
+              <MenuItem>
+                <Link to='/mw' className='text-cb-pink hover:text-cb-pink/75'>
+                  mw
+                </Link>
+              </MenuItem>
+              {/* <MenuItem>
+                <Link to='/wt' className='text-cb-pink hover:text-cb-pink/75'>
+                  wt
+                </Link>
+              </MenuItem> */}
             </MenuItems>
           </MenuRoot>
         </div>
