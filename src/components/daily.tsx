@@ -118,11 +118,14 @@ function DTChapterButton({
   streakInfo: StreakInfo
   setStreakInfo: Dispatch<SetStateAction<StreakInfo | undefined>>
 }) {
+  const date = format(now, 'yyyy/MM/dd')
   const [copiedText, copyToClipboard] = useCopyToClipboard()
   const [showButton, setShowButton] = useState(false)
+  const [force, setForce] = useState(false)
   const { data, isLoading } = api.sword.dtDaily.useQuery(
     {
-      date: format(now, 'yyyy/MM/dd'),
+      date,
+      force,
     },
     {
       staleTime: 1000 * 60 * 5, // 5 minutes
@@ -208,6 +211,14 @@ function DTChapterButton({
         disabled={isLoading}
       >
         <DocumentDuplicateIcon className='mx-auto h-6 w-6' />
+      </Button>
+      <Button
+        onClick={() => {
+          setForce(true)
+        }}
+        className='flex-1/6'
+      >
+        <CloudArrowDownIcon className='mx-auto h-6 w-6' />
       </Button>
     </div>
   )

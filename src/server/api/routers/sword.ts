@@ -46,17 +46,18 @@ export const swordRouter = createTRPCRouter({
       return data
     }),
   dtDaily: publicProcedure
-    .input(z.object({ date: z.string() }))
+    .input(z.object({ date: z.string(), force: z.boolean().optional() }))
     .query(async ({ input }) => {
+      const { date, force } = input
       const lastFetchDate = await redis.get<string>(LAST_FETCH_TIMESTAMP_KEY)
       const cachedDt = await redis.get<DTResponse>(CACHED_DT_KEY)
-      if (lastFetchDate && cachedDt && lastFetchDate === input.date) {
+      if (lastFetchDate && cachedDt && lastFetchDate === date && !force) {
         console.log('serving daily data from redis cache')
         return cachedDt
       }
 
-      const data: DTResponse = await requestDailyText(input.date)
-      await redis.set(LAST_FETCH_TIMESTAMP_KEY, input.date)
+      const data: DTResponse = await requestDailyText(date)
+      await redis.set(LAST_FETCH_TIMESTAMP_KEY, date)
       await redis.set(CACHED_DT_KEY, data)
 
       return data
