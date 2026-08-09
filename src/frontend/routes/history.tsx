@@ -273,15 +273,23 @@ export default function History() {
         setIsOpen={setIsExportModalOpen}
         title='import/export history'
       >
-        <Button
-          onClick={async () => {
-            await copyToClipboard(btoa(JSON.stringify(history)))
-            toast.success('copied export code to clipboard')
-          }}
-        >
-          export
-        </Button>
-        <hr className='border-cb-white/25' />
+        {history?.length > 0 && (
+          <>
+            <textarea
+              className='bg-cobalt w-full p-4'
+              defaultValue={JSON.stringify(history)}
+            />
+            <Button
+              onClick={async () => {
+                await copyToClipboard(btoa(JSON.stringify(history)))
+                toast.success('copied export code to clipboard')
+              }}
+            >
+              export
+            </Button>
+            <hr className='border-cb-white/25' />
+          </>
+        )}
         <textarea
           className='bg-cobalt w-full p-4'
           value={importText}
