@@ -1,5 +1,5 @@
 import { NavLink as Link } from 'react-router'
-import { PencilSquareIcon } from '@heroicons/react/20/solid'
+import { PencilSquareIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { SignedIn, SignedOut } from '@clerk/nextjs'
 
 import { Main } from '@/components/ui'
@@ -34,7 +34,7 @@ function ScriptureLists() {
           SCRIPTURE_LIST_TAGS.every(tag => note.tags?.includes(tag))
         )
         .map(note => (
-          <li key={note.id} className='group flex space-x-2'>
+          <li key={note.id} className='group flex items-center space-x-2'>
             <Link
               to={`/lists/${note.id}`}
               className='text-cb-pink hover:text-cb-pink/75 flex grow items-center justify-between py-4 group-first:pt-0'
@@ -42,6 +42,12 @@ function ScriptureLists() {
               <div>
                 <div>{note.title}</div>
               </div>
+            </Link>
+            <Link
+              className='text-cb-pink hover:text-cb-pink/75 disabled:pointer-events-none disabled:opacity-25'
+              to={`/notes/${note.id}`}
+            >
+              <PencilSquareIcon className='h-6 w-6' />
             </Link>
           </li>
         ))}
@@ -72,7 +78,7 @@ export default function ListsPage() {
             className='text-cb-yellow hover:text-cb-yellow/75 disabled:pointer-events-none disabled:opacity-25'
             to='/lists/new'
           >
-            <PencilSquareIcon className='h-6 w-6' />
+            <PlusIcon className='h-6 w-6' />
           </Link>
         </div>
       </footer>
