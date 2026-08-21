@@ -15,7 +15,7 @@ export default function TopNav({ title }: { title?: string }) {
 
   const username = user?.username
   return (
-    <header className='container mx-auto mb-2 flex w-full max-w-screen-md items-center px-2 pt-2 md:px-0'>
+    <header className='mb-4 flex w-full items-center px-4 pt-4'>
       <Title>{title ?? DEFAULT_TITLE}</Title>
       <div className='flex flex-grow justify-end'>
         <SignedOut>
