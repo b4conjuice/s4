@@ -33,7 +33,7 @@ export default function Textarea({
     <textarea
       {...textareaProps}
       ref={textAreaRef}
-      className='border-cobalt bg-cobalt caret-cb-yellow focus:border-cb-light-blue h-full w-full flex-grow focus:ring-0'
+      className='border-cobalt bg-cobalt caret-cb-yellow not-read-only:focus:border-cb-light-blue h-full w-full flex-grow focus:ring-0'
       value={text}
       onChange={e => {
         setText(e.target.value)

@@ -25,6 +25,7 @@ import Modal from '@/components/modal'
 import Button from '@/components/ui/button'
 import type { Note } from '@/lib/types'
 import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
+import TopNav from '@/components/top-nav'
 
 const TABS = ['default', 'settings'] as const
 type Tab = (typeof TABS)[number]
@@ -118,6 +119,22 @@ export default function Note() {
   }, [debouncedText])
 
   const openScriptureUrl = useOpenScriptureUrl()
+  if (!isSignedIn) {
+    return (
+      <>
+        <TopNav title='notes' />
+        <Main className='flex flex-col'>
+          <Textarea {...textarea} textareaProps={{ readOnly: true }} />
+        </Main>
+        <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
+          <Link to='/notes' className='text-cb-yellow hover:text-cb-yellow/75'>
+            <ChevronLeftIcon className='h-6 w-6' />
+          </Link>
+          <div className='flex space-x-4'></div>
+        </footer>
+      </>
+    )
+  }
   return (
     <>
       <Main className='flex flex-col'>
