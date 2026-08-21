@@ -15,6 +15,7 @@ const nav = [
   { text: 'notes', href: '/notes' },
   { text: 'new note', href: '/notes/new' },
   { text: 'scroll', href: '/text/scroll' },
+  { text: 'lists', href: '/lists' },
 ]
 
 export default function Menu() {

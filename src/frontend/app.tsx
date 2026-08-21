@@ -14,6 +14,9 @@ import SettingsPage from '@/frontend/routes/settings'
 import ScrollPage from '@/frontend/routes/scroll'
 import TextSearchPage from '@/frontend/routes/text-search'
 import MWPage from '@/frontend/routes/mw'
+import ListsPage from '@/frontend/routes/lists'
+import ListPage from '@/frontend/routes/list'
+import NewListPage from '@/frontend/routes/new-list'
 
 export default function App() {
   return (
@@ -38,6 +41,9 @@ export default function App() {
           <Route path='/text/:text/:id' element={<NotePage />} />
           <Route path='/text/scroll' element={<ScrollPage />} />
           <Route path='/mw' element={<MWPage />} />
+          <Route path='/lists' element={<ListsPage />} />
+          <Route path='/lists/:id' element={<ListPage />} />
+          <Route path='/lists/new' element={<NewListPage />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer
