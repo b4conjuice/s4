@@ -132,9 +132,8 @@ export default function ListPage() {
   if (!isSignedIn) {
     return (
       <>
-        <TopNav />
+        <TopNav title={title} />
         <Main className='flex flex-col gap-4 px-4'>
-          <h2>{title}</h2>
           <ScriptureList list={list} />
         </Main>
         <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
@@ -148,12 +147,12 @@ export default function ListPage() {
   }
   return (
     <>
+      <TopNav title={title} />
       <Main className='flex flex-col'>
         {tab === 'edit' ? (
           <Textarea {...textarea} />
         ) : (
           <div className='flex flex-col gap-4 px-4'>
-            <h2>{title}</h2>
             <ScriptureList list={list} />
           </div>
         )}
