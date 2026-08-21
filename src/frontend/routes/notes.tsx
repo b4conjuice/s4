@@ -21,13 +21,13 @@ export default function NotesPage() {
   return (
     <>
       <TopNav title='notes' />
-      <Main className='flex flex-col px-2'>
+      <Main className='flex grow flex-col gap-4 px-4'>
         <div className='flex flex-grow flex-col space-y-4'>
           <SignedIn>
             <Notes />
           </SignedIn>
           <SignedOut>
-            <p>sign in to view your notes</p>
+            <p>login to see your notes</p>
           </SignedOut>
         </div>
       </Main>
