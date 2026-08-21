@@ -1,10 +1,20 @@
 import { NavLink as Link } from 'react-router'
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
+import {
+  ArrowTopRightOnSquareIcon,
+  EllipsisVerticalIcon,
+} from '@heroicons/react/20/solid'
 
 import { transformTextToScripture } from '@/lib/books'
 import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
+import type { Scripture } from '@/lib/types'
 
-export default function ScriptureList({ list }: { list: string[] }) {
+export default function ScriptureList({
+  list,
+  onSelectScripture,
+}: {
+  list: string[]
+  onSelectScripture?: (scripture: Scripture) => void
+}) {
   const openScriptureUrl = useOpenScriptureUrl()
   return (
     <ul className='divide-cb-dusty-blue divide-y'>
@@ -43,6 +53,17 @@ export default function ScriptureList({ list }: { list: string[] }) {
             >
               <ArrowTopRightOnSquareIcon className='h-6 w-6' />
             </button>
+            {onSelectScripture && (
+              <button
+                className='text-cb-pink hover:text-cb-pink/75 disabled:pointer-events-none disabled:opacity-25'
+                type='button'
+                onClick={() => {
+                  onSelectScripture(scripture)
+                }}
+              >
+                <EllipsisVerticalIcon className='h-6 w-6' />
+              </button>
+            )}
           </li>
         )
       })}

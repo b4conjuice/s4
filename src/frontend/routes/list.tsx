@@ -24,7 +24,7 @@ import { api } from '@/trpc/react'
 import { Main } from '@/components/ui'
 import Modal from '@/components/modal'
 import Button from '@/components/ui/button'
-import type { Note } from '@/lib/types'
+import type { Scripture } from '@/lib/types'
 import useOpenScriptureUrl from '@/lib/useOpenScriptureUrl'
 import TopNav from '@/components/top-nav'
 import { transformScripturetoText } from '@/lib/books'
@@ -94,6 +94,12 @@ export default function ListPage() {
     }
   }, [tab])
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+  const [
+    isConfirmDeleteScriptureModalOpen,
+    setIsConfirmDeleteScriptureModalOpen,
+  ] = useState(false)
+  const [isSelectedItemModalOpen, setIsSelectedItemModalOpen] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<Scripture | null>(null)
 
   const readOnly = false // !user || user.username !== note?.author
   const hasChanges = text !== (note?.text ?? '')
@@ -153,7 +159,13 @@ export default function ListPage() {
           <Textarea {...textarea} />
         ) : (
           <div className='flex flex-col gap-4 px-4'>
-            <ScriptureList list={list} />
+            <ScriptureList
+              list={list}
+              onSelectScripture={scripture => {
+                setSelectedItem(scripture)
+                setIsSelectedItemModalOpen(true)
+              }}
+            />
           </div>
         )}
       </Main>
@@ -251,6 +263,67 @@ export default function ListPage() {
           </div>
         </footer>
       </SignedIn>
+      {selectedItem !== null && (
+        <>
+          <Modal
+            isOpen={isSelectedItemModalOpen}
+            setIsOpen={setIsSelectedItemModalOpen}
+            title={selectedItem.asString}
+          >
+            <div className='just flex'>
+              <button
+                className='text-red-700 hover:text-red-700/75'
+                type='button'
+                onClick={() => {
+                  setIsSelectedItemModalOpen(false)
+                  setIsConfirmDeleteScriptureModalOpen(true)
+                }}
+              >
+                <TrashIcon className='h-6 w-6' />
+              </button>
+            </div>
+          </Modal>
+          <Modal
+            isOpen={isConfirmDeleteScriptureModalOpen}
+            setIsOpen={setIsConfirmDeleteScriptureModalOpen}
+            title={`are you sure you want to delete ${selectedItem.asString}?`}
+          >
+            <div className='flex space-x-4'>
+              <Button
+                onClick={async () => {
+                  const { text: bibleParam } = selectedItem
+                  const { title, list } = note
+                  const selectedItemIndex = list.findIndex(
+                    item => item === bibleParam
+                  )
+                  if (selectedItemIndex > -1) {
+                    list.splice(selectedItemIndex, 1)
+                    const body = list.join('\n\n')
+                    const newNote = {
+                      ...note,
+                      text: title + '\n\n' + body,
+                    }
+
+                    saveNote(newNote)
+                  } else {
+                    console.log('selectedItem not found in list')
+                  }
+                  setIsConfirmDeleteScriptureModalOpen(false)
+                }}
+              >
+                yes
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsConfirmModalOpen(false)
+                }}
+              >
+                no
+              </Button>
+            </div>
+          </Modal>
+        </>
+      )}
       <Modal
         isOpen={isConfirmModalOpen}
         setIsOpen={setIsConfirmModalOpen}
