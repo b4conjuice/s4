@@ -43,7 +43,7 @@ export default function ListPage() {
   const utils = api.useUtils()
   const { mutate: saveNote } = api.note.save.useMutation({
     onSuccess: async () => {
-      await utils.note.getAll.invalidate()
+      await utils.note.get.invalidate()
     },
     onMutate: async newNote => {
       // Cancel outgoing fetches (so they don't overwrite our optimistic update)
@@ -174,18 +174,13 @@ export default function ListPage() {
           <BookSearch
             searchRef={searchRef}
             onSelectBook={scripture => {
-              // const scriptureAsString =
-              //   scripture.asString ??
-              //   `${scripture.bookName} ${scripture.chapter}`
-              // insertText(scriptureAsString)
-
-              // openScriptureUrl(scripture)
-
-              // add scripture to list
               const bibleParam = transformScripturetoText(scripture)
+              const { title, body } = note
+              const newBody = body + '\n' + bibleParam
               const newNote = {
                 ...note,
-                text: note.text + '\n' + bibleParam,
+                text: title + '\n\n' + newBody,
+                body: newBody,
               }
               saveNote(newNote)
             }}
