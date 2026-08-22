@@ -185,6 +185,7 @@ export default function ListPage() {
               saveNote(newNote)
             }}
             showRecentCommands
+            placeholder='add scripture'
           />
           <div className='flex items-center justify-between'>
             <div className='flex space-x-4'>
