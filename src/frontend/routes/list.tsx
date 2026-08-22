@@ -297,6 +297,7 @@ export default function ListPage() {
                     const newNote = {
                       ...note,
                       text: title + '\n\n' + body,
+                      body,
                     }
 
                     saveNote(newNote)
