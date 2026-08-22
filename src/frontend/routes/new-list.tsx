@@ -45,28 +45,14 @@ export default function NewListPage() {
   }>('s4-new-list', { title: '', items: [] })
   const title = list.title ?? ''
   const items = list.items ?? []
-  const canSave = list.title !== '' && items.length > 0
+  const canSave = isSignedIn && list.title !== '' && items.length > 0
 
-  if (!isSignedIn) {
-    return (
-      <>
-        <TopNav title='new list' />
-        <Main className='flex flex-col px-4'>
-          <p>login to save list</p>
-        </Main>
-        <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
-          <Link to='/notes' className='text-cb-yellow hover:text-cb-yellow/75'>
-            <ChevronLeftIcon className='h-6 w-6' />
-          </Link>
-          <div className='flex space-x-4'></div>
-        </footer>
-      </>
-    )
-  }
   return (
     <>
+      <TopNav title='new list' />
       <Main className='flex flex-col'>
-        <div className='flex flex-col px-4'>
+        <div className='flex flex-col gap-4 px-4'>
+          <p>login to save list</p>
           <input
             className='bg-cobalt text-cb-white'
             type='text'
@@ -79,34 +65,37 @@ export default function NewListPage() {
             }}
             placeholder='title'
           />
-          {items.length > 0 ? <ScriptureList list={items} /> : <p>add items</p>}
+          {items.length > 0 ? (
+            <ScriptureList list={items} />
+          ) : (
+            <p>no scriptures yet</p>
+          )}
         </div>
       </Main>
-      <SignedIn>
-        <footer className='bg-cb-dusty-blue sticky bottom-0 flex flex-col space-y-2 px-2 pt-2 pb-6'>
-          <BookSearch
-            searchRef={searchRef}
-            onSelectBook={scripture => {
-              // add scripture to list
-              const bibleParam = transformScripturetoText(scripture)
-              setList({
-                ...list,
-                items: [...items, bibleParam],
-              })
-            }}
-            showRecentCommands
-            placeholder='add scripture'
-          />
-          <div className='flex items-center justify-between'>
-            <div className='flex space-x-4'>
-              <Link
-                to='/lists'
-                className='text-cb-yellow hover:text-cb-yellow/75'
-              >
-                <ChevronLeftIcon className='h-6 w-6' />
-              </Link>
-            </div>
-            <div className='flex space-x-4'>
+      <footer className='bg-cb-dusty-blue sticky bottom-0 flex flex-col space-y-2 px-2 pt-2 pb-6'>
+        <BookSearch
+          searchRef={searchRef}
+          onSelectBook={scripture => {
+            const bibleParam = transformScripturetoText(scripture)
+            setList({
+              ...list,
+              items: [...items, bibleParam],
+            })
+          }}
+          showRecentCommands
+          placeholder='add scripture'
+        />
+        <div className='flex items-center justify-between'>
+          <div className='flex space-x-4'>
+            <Link
+              to='/lists'
+              className='text-cb-yellow hover:text-cb-yellow/75'
+            >
+              <ChevronLeftIcon className='h-6 w-6' />
+            </Link>
+          </div>
+          <div className='flex space-x-4'>
+            <SignedIn>
               <button
                 className='text-cb-yellow hover:text-cb-yellow flex w-full justify-center disabled:pointer-events-none disabled:opacity-25'
                 type='button'
@@ -133,10 +122,10 @@ export default function NewListPage() {
               >
                 <ArrowDownOnSquareIcon className='h-6 w-6' />
               </button>
-            </div>
+            </SignedIn>
           </div>
-        </footer>
-      </SignedIn>
+        </div>
+      </footer>
     </>
   )
 }
