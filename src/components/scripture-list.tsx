@@ -35,10 +35,10 @@ export default function ScriptureList({
           )
         }
         return (
-          <li key={index} className='group flex space-x-2'>
+          <li key={index} className='flex space-x-2 py-4 first:pt-0'>
             <Link
               to={`/text/${bibleParam}`}
-              className='text-cb-pink hover:text-cb-pink/75 flex grow items-center justify-between py-4 group-first:pt-0'
+              className='text-cb-pink hover:text-cb-pink/75 flex grow items-center justify-between'
             >
               <div>
                 <div>{scripture.asString}</div>
