@@ -185,7 +185,7 @@ export default function ListPage() {
               const bibleParam = transformScripturetoText(scripture)
               const newNote = {
                 ...note,
-                text: note.text + '\n\n= ' + bibleParam,
+                text: note.text + '\n' + bibleParam,
               }
               saveNote(newNote)
             }}
