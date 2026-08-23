@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { NavLink as Link, useNavigate } from 'react-router'
-import { SignedIn, useAuth } from '@clerk/nextjs'
+import { SignedIn, SignedOut, useAuth } from '@clerk/nextjs'
 import {
   ArrowDownOnSquareIcon,
   ChevronLeftIcon,
@@ -52,7 +52,9 @@ export default function NewListPage() {
       <TopNav title='new list' />
       <Main className='flex flex-col'>
         <div className='flex flex-col gap-4 px-4'>
-          <p>login to save list</p>
+          <SignedOut>
+            <p>login to save list</p>
+          </SignedOut>
           <input
             className='bg-cobalt text-cb-white'
             type='text'
